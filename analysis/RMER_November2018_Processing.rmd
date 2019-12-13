@@ -1,0 +1,67 @@
+---
+title: "Process and Describe"
+author: "joellarwood"
+date: "2019-12-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r install, echo = FALSE, warnings = FALSE, message=FALSE}
+library(tidyverse)
+library(psych)
+library(ggpubr)
+library(here)
+library(glue)
+library(kableExtra)
+library(qualtRics)
+
+knitr::opts_chunk$set(autodep = TRUE, warnings = FALSE, message = FALSE)
+ options(scipen=999, digits=3)
+
+```
+
+
+# Load in Data
+
+```{r LoadIn}
+
+Nov18Working <- read_rds(here::here("data", "RMER_November2018_ProcessedWide.rds"))
+
+```
+
+
+## Descriptives
+```{r descriptives}
+Nov18Working %>% 
+  select(age, 
+         rumination, 
+         hours.listen,
+         Baseline, 
+         PostInduction, 
+         PostListening) %>% 
+  psych::describe() %>% 
+  knitr::kable(format = "html") %>% 
+  kableExtra::kable_styling()
+
+```
+
+## Reliabilities
+```{r Nov18Workingalphas, echo = FALSE}
+baseline <- psych::alpha(dplyr::select(Nov18Working, deq_1_1:deq_1_4))$total$raw_alpha
+postinduction <- psych::alpha(dplyr::select(Nov18Working, deq_2_1:deq_2_4))$total$raw_alpha
+postlistening <- psych::alpha(dplyr::select(Nov18Working, deq_3_1:deq_3_4))$total$raw_alpha
+rumalpha <- psych::alpha(dplyr::select(Nov18Working, rrq_1:rrq_12))$total$raw_alpha
+musebaqalpha<- psych::alpha(dplyr::select(Nov18Working, musebaq_1:musebaq_9))$total$raw_alpha
+```
+
+The alpha for the DEQ - Sadness at Baseline was `r baseline`
+
+The alpha for the DEQ DEQ - Sadness at Post Induction  was `r postinduction`
+
+The alpha for the DEQ _ Sadness at post Listening was `r postlistening`
+
+The alpha for rumination scores was `r rumalpha`
+
+The alpha for the cognitive and emotion regulation scale of the MUSEBAQ was `r musebaqalpha`
+

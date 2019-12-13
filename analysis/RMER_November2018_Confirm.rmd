@@ -1,0 +1,99 @@
+---
+title: "RMER_November2018_Confirm"
+author: "joellarwood"
+date: "2019-12-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r echo = FALSE, warnings = FALSE, message=FALSE}
+library(tidyverse)
+library(lmerTest)
+library(emmeans)
+library(sjPlot)
+
+knitr::opts_chunk$set(autodep = TRUE, warnings = FALSE, message = FALSE)
+
+options(scipen=999, digits=3)
+```
+
+## Read in and make long form 
+```{r}
+
+Nov18WorkingLong <- read_rds(here::here("data", "RMER_November2018_ProcessedWide.rds"))  %>% 
+  select(ResponseId, 
+         Baseline:rumination) %>% 
+  pivot_longer(cols = Baseline:PostListening, 
+               names_to = "Timepoint", 
+               names_ptypes = factor(), 
+               values_to = "Sadness") # %>% 
+ # as_factor(Timepoint)
+
+Nov18WorkingLong$Timepoint <- fct_relevel(Nov18WorkingLong$Timepoint, 
+                                          "PostInduction") # Not sure why factor conversion is not woring in pipe
+
+
+```
+
+# Write data
+```{r}
+Nov18WorkingLong %>% 
+  write_rds(here::here("data", "RMER_November2018_Processedlong.rds"))
+
+Nov18WorkingLong %>% 
+  write_csv(here::here("data", "RMER_November2018_Processedlong.csv"))
+```
+
+
+## Model data 
+### Manipulation check 
+```{r}
+ManipCheck <- lmerTest::lmer(Sadness~1 + Timepoint + (1|ResponseId), data = filter(Nov18WorkingLong, Timepoint != "PostListening"))
+
+difflsmeans(ManipCheck)
+
+```
+
+Significant Increase in Sadness post induction
+
+
+```{r}
+
+PostInductionTimePoints <- lmerTest::lmer(Sadness~1 + Timepoint  + rumination + Timepoint:rumination + (1|ResponseId), data = filter(Nov18WorkingLong, Timepoint != "Baseline"))
+
+sjPlot::tab_model(PostInductionTimePoints, 
+                  show.std = TRUE, 
+                  show.aic = TRUE,
+                  show.df = TRUE
+                  )
+
+lmerTest::difflsmeans(PostInductionTimePoints)
+
+minrum <- mean(Nov18Working$rumination, na.rm = TRUE) - sd(Nov18Working$rumination, na.rm = TRUE)
+meanrum <- mean(Nov18Working$rumination, na.rm = TRUE)
+plusrum <- mean(Nov18Working$rumination, na.rm = TRUE) + sd(Nov18Working$rumination, na.rm = TRUE)
+
+
+emmeans::contrast(emmeans::emmeans(PostInductionTimePoints, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum), Timepoint = c("PostInduction", "PostListening")))), 
+                  "pairwise", 
+                  by = "rumination")
+```
+
+Sadness increases over the duration of music listening but the increase is greater for peolpe high in rumination
+
+```{r}
+emmeans::emmip(emmeans::ref_grid(PostInductionTimePoints, 
+                                 list(rumination = c(minrum, plusrum, meanrum), Timepoint = c("PostInduction", "PostListening"))), 
+               rumination~Timepoint, 
+               CI = TRUE) +
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  scale_fill_discrete(labels = c("-1SD", "Mean", "+1SD"))
+```
+
+
+

@@ -6,12 +6,15 @@ navbar:
   - text: Home
     href: index.html
   - text: About
-    href: about.html
+    href: Processing.html
   - text: License
-    href: license.html
+    href: Confrim.html
+  - text: Explore 
+    href: Explore.html
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
     theme: cosmo
     highlight: textmate
+    code_folding: hide

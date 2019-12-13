@@ -7,4 +7,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+This project investigated how sadness changed when self-nominated sadness inducing songs were listened to by participants who were in an induced sad state. We were intersted in how these changes in sadness were influenced 
+
+We also explored how characteristics of the music influenced these changes in sandess. 
