@@ -33,7 +33,8 @@ Nov18BasicClean <- Nov18BasicClean %>%
          PostInduction = rowSums(dplyr::select(., deq_2_1: deq_2_4)),
          PostListening = rowSums(dplyr::select(., deq_3_1: deq_3_4)),
          rumination = rowMeans(dplyr::select(., rrq_1:rrq_12), na.rm = TRUE), 
-         ResponseId = factor(ResponseId)
+         ResponseId = factor(ResponseId), 
+         age = age + 17
   )
 
 #export 
