@@ -1,0 +1,103 @@
+---
+title: "RMER_November2018_MusicExplore"
+author: "joellarwood"
+date: "2019-12-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+
+```{r echo = FALSE, warnings = FALSE, message=FALSE}
+library(tidyverse)
+library(lmerTest)
+library(emmeans)
+library(sjPlot)
+library(apa)
+library(interactions)
+library(tidytext)
+library(glue)
+
+knitr::opts_chunk$set(autodep = TRUE, warnings = FALSE, message = FALSE)
+
+options(scipen=999, digits=3)
+```
+
+
+```{r LoadIn}
+
+Nov18Features_Lyrics <- read_rds(here::here("data", "RMER_November2018_Spotify_Lyrics.rds")) 
+
+
+
+## Processing of lyrics taken from https://www.rcharlie.com/post/fitter-happier/
+
+sad_words <- tidytext::get_sentiments("nrc") %>% 
+  filter(sentiment == "sadness") %>% 
+  select(word) %>% 
+  mutate(sad = T)
+
+pos_words <- tidytext::get_sentiments("nrc") %>% 
+  filter(sentiment == "positive") %>% 
+  select(word) %>% 
+  mutate(positive = T)
+
+neg_words <- tidytext::get_sentiments("nrc") %>% 
+  filter(sentiment == "negative") %>% 
+  select(word) %>% 
+  mutate(negative = T)
+
+Nov18_Sent <- Nov18Features_Lyrics %>% 
+  unnest_tokens(word, lyric) %>%
+  select(word, song_artist) %>% 
+  anti_join(stop_words, by = 'word') %>%
+  left_join(sad_words, by = 'word') %>% # can add to pipe to add postive, angry, words etc by creating a new data frame that just has those words (i.e. get_sentiments("nrc") %>% filter(sentiments == "sentiment") %>%  ... )
+  left_join(pos_words, by = "word") %>% 
+  left_join(neg_words, by = "word") %>% 
+  group_by(song_artist) %>% 
+  summarise(word_count = n(),
+            sad_count = sum(sad, na.rm = T), 
+            pos_count = sum(positive, na.rm = T), 
+            neg_count = sum(negative, na.rm = TRUE), 
+            sad_pct = round(sum(sad, na.rm = T) / n() *100, 4),
+            neg_pos_ratio = round(sum(negative, na.rm = T)/sum(positive, na.rm = TRUE), 4), 
+            sad_pos_ratio = round(sum(sad, na.rm = TRUE)/sum(positive, na.rm = TRUE), 4)) %>% 
+  mutate(bias = if_else(neg_pos_ratio > 1, 
+                        "Negative", 
+                        if_else (neg_pos_ratio< 1,
+                                 "Positive",
+                                 if_else(neg_pos_ratio == 1, 
+                                         "Equal", "NA")))) %>% 
+  ungroup
+
+Nov18_Features_Sent <- Nov18Features_Lyrics %>% 
+  right_join(Nov18_Sent, by = "song_artist")
+
+```
+
+#Look at distributions of key variables 
+baseline
+musebaq
+rumination 
+valence 
+energy 
+sad_count
+neg_pos_ratio
+sad_pos_ratio
+
+```{r}
+par(mfcol = c(4, 2))
+
+vars <- c("Baseline", "musebaq", "rumination", "valence", "energy", "sad_count", "neg_pos_ratio", "sad_pos_ratio")
+
+for(var in vars){
+  dev.new()
+  hist(Nov18_Features_Sent$i, 20)
+}
+
+```
+
+
+

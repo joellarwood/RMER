@@ -1,0 +1,190 @@
+---
+title: "RMER_November2018_Traits"
+author: "joellarwood"
+date: "2019-12-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r echo = FALSE, warnings = FALSE, message=FALSE}
+library(tidyverse)
+library(lmerTest)
+library(emmeans)
+library(sjPlot)
+library(apa)
+library(interactions)
+library(glmmLasso)
+
+knitr::opts_chunk$set(autodep = TRUE, warnings = FALSE, message = FALSE)
+
+options(scipen=999, digits=3)
+```
+
+## Read in and make long form 
+```{r ReadIn}
+Nov18BasicClean <- read_rds(here::here("data", "RMER_November2018_ProcessedWide.rds"))
+
+Nov18WorkingLong <- Nov18BasicClean  %>% 
+  select(ResponseId, 
+         Baseline:rumination) %>% 
+  pivot_longer(cols = Baseline:PostListening, 
+               names_to = "Timepoint", 
+               names_ptypes = factor(), 
+               values_to = "Sadness") # %>% 
+ # as_factor(Timepoint)
+
+Nov18WorkingLong$Timepoint <- fct_relevel(Nov18WorkingLong$Timepoint, 
+                                          "PostInduction") # Not sure why factor conversion is not woring in pipe
+
+
+```
+
+# Write data
+```{r WriteLong}
+Nov18WorkingLong %>% 
+  write_rds(here::here("data", "RMER_November2018_Processedlong.rds"))
+
+Nov18WorkingLong %>% 
+  write_csv(here::here("data", "RMER_November2018_Processedlong.csv"))
+```
+
+
+## Model data 
+### Manipulation check 
+
+The induction of sadnes was succesfull `r apa::t_apa(t_test(Nov18BasicClean$Baseline, Nov18BasicClean$PostInduction, paired = TRUE), format = "markdown")`
+
+## Confirmatory Analysis
+```{r ConfirmGLMM}
+
+PostInductionTimePoints <- lmerTest::lmer(Sadness~1 + Timepoint  + rumination + Timepoint:rumination + (1|ResponseId), data = filter(Nov18WorkingLong, Timepoint != "Baseline"))
+
+sjPlot::tab_model(PostInductionTimePoints, 
+                  show.std = TRUE, 
+                  show.aic = TRUE,
+                  show.df = TRUE
+                  )
+```
+
+There was a mean difference however, `r apa::t_apa(t_test(Nov18BasicClean$PostListening, Nov18BasicClean$PostInduction, paired = TRUE), format = "markdown")`
+
+```{r ConfirmInteraction}
+lmerTest::difflsmeans(PostInductionTimePoints)
+
+minrum <- mean(Nov18BasicClean$rumination, na.rm = TRUE) - sd(Nov18Working$rumination, na.rm = TRUE)
+meanrum <- mean(Nov18BasicClean$rumination, na.rm = TRUE)
+plusrum <- mean(Nov18BasicClean$rumination, na.rm = TRUE) + sd(Nov18Working$rumination, na.rm = TRUE)
+
+
+emmeans::contrast(emmeans::emmeans(PostInductionTimePoints, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum), Timepoint = c("PostInduction", "PostListening")))), 
+                  "pairwise", 
+                  by = "rumination")
+```
+
+Value of slope at lowest possible rumination score 
+
+```{r}
+emmeans::contrast(emmeans::emmeans(PostInductionTimePoints, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(3), Timepoint = c("PostInduction", "PostListening")))), 
+                  "pairwise", 
+                  by = "rumination")
+```
+
+#Johnson Neyman 
+```{r}
+DummyLong <- Nov18WorkingLong %>% 
+  filter(Timepoint != "Baseline") %>% 
+  mutate(Dummy = if_else(Timepoint == "PostInduction", 0, 1))
+
+DummyGLMM <- lmerTest::lmer(Sadness~1 + Dummy  + rumination + Dummy:rumination + (1|ResponseId), data = DummyLong)
+
+sjPlot::tab_model(DummyGLMM)
+
+upperJN <- interactions::johnson_neyman(model = DummyGLMM, 
+                             pred = "Dummy", 
+                             modx = "rumination")$bounds[[2]]
+
+emmeans::contrast(emmeans::emmeans(PostInductionTimePoints, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(upperJN, 1), Timepoint = c("PostInduction", "PostListening")))), 
+                  "pairwise", 
+                  by = "rumination")
+
+
+quantile(Nov18BasicClean$rumination, c(.05, .06, .07, .08), na.rm = TRUE)
+
+```
+
+The JN interval was `r round(upperJN, 2)` this score is representative of the `r percentile()`
+
+```{r PlotConfirm}
+confirm_plot <- emmeans::emmip(emmeans::ref_grid(PostInductionTimePoints, 
+                                 list(rumination = c(plusrum, meanrum, minrum), Timepoint = c("PostInduction", "PostListening"))), 
+               rumination~Timepoint, 
+               CI = TRUE)  +
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") 
+
+confirm_plot
+```
+
+
+## Exploratory Analysis
+
+A new trait was added at each step
+Step 1: Baseline sadness
+Step 2: Use of music for regulation
+Step 3: Rumination
+
+```{r}
+Nov18ExploreLong <- Nov18WorkingLong %>% 
+  filter(Timepoint != "Baseline") %>% 
+  left_join(dplyr::select(Nov18BasicClean, ResponseId, Baseline, musebaq, age, gender, hours.listen), by = "ResponseId") 
+
+Step1 <- lmerTest::lmer(Sadness~ 1+Timepoint*Baseline + (1 | ResponseId), data = Nov18ExploreLong)
+Step2 <- lmerTest::lmer(Sadness~ 1+Timepoint*Baseline + Timepoint*musebaq + (1 | ResponseId), data = Nov18ExploreLong)
+Step3 <- lmerTest::lmer(Sadness~ 1+Timepoint*Baseline + Timepoint*musebaq +Timepoint*hours.listen + (1 | ResponseId), data = Nov18ExploreLong)
+Step4 <- lmerTest::lmer(Sadness~ 1+Timepoint*Baseline + Timepoint*musebaq +Timepoint*hours.listen +Timepoint*rumination + (1 | ResponseId), data = Nov18ExploreLong)
+
+sjPlot::tab_model(Step1, Step2, Step3, Step4, 
+                  show.std = TRUE, 
+                  show.est = FALSE, 
+                  show.aic = TRUE, 
+                  show.aicc = TRUE, 
+                  show.loglik = TRUE)
+
+anova(Step1, Step2, Step3, Step4) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_styling()
+```
+
+```{r}
+stepback <- buildmer::buildmer(formula = Sadness~ 1+Timepoint*Baseline + Timepoint*musebaq + Timepoint*rumination + Timepoint*hours.listen + Timepoint*age + Timepoint*gender +(1 | ResponseId), 
+                   data = Nov18ExploreLong, 
+                   crit = "AIC", 
+                   direction = "backward")
+
+stepbackchosen <- lmerTest::lmer(formula = stepback@p[["formula"]], 
+                                 data = Nov18ExploreLong)
+
+tab_model(stepbackchosen, 
+          show.std = TRUE, 
+                  show.aic = TRUE)
+
+anova(stepbackchosen, Step4)
+
+
+```
+
+
+
