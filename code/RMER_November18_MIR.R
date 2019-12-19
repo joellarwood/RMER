@@ -19,12 +19,12 @@ track_audio_features <- function(artist, title, type = "track") {
   search_results <- spotifyr::search_spotify(paste(artist, title), type = type)
   
   spotify_artist <- dplyr::rename(
-      tibble::enframe(search_results[[1]][[1]][[3]]), 
+    tibble::enframe(search_results[[1]][[1]][[3]]), 
     artist_rtn = value)
   
   spotify_song <- dplyr::rename(
-      tibble::enframe(search_results$name),
-      song_rtn = value)
+    tibble::enframe(search_results$name),
+    song_rtn = value)
   
   spotify_meta_rtn <- dplyr::select(dplyr::inner_join(spotify_artist, spotify_song), -name) 
   

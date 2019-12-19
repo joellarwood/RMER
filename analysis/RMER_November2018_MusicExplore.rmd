@@ -19,6 +19,7 @@ library(apa)
 library(interactions)
 library(tidytext)
 library(glue)
+library(Hmisc)
 
 knitr::opts_chunk$set(autodep = TRUE, warnings = FALSE, message = FALSE)
 
@@ -29,8 +30,7 @@ options(scipen=999, digits=3)
 ```{r LoadIn}
 
 Nov18Features_Lyrics <- read_rds(here::here("data", "RMER_November2018_Spotify_Lyrics.rds")) 
-
-
+Nov18Features <- read_rds(here::here("data", "RMER_November2018_Spotify.rds"))
 
 ## Processing of lyrics taken from https://www.rcharlie.com/post/fitter-happier/
 
@@ -55,32 +55,46 @@ Nov18_Sent <- Nov18Features_Lyrics %>%
   anti_join(stop_words, by = 'word') %>%
   left_join(sad_words, by = 'word') %>% # can add to pipe to add postive, angry, words etc by creating a new data frame that just has those words (i.e. get_sentiments("nrc") %>% filter(sentiments == "sentiment") %>%  ... )
   left_join(pos_words, by = "word") %>% 
-  left_join(neg_words, by = "word") %>% 
+  left_join(neg_words, by = "word")  %>%  
   group_by(song_artist) %>% 
   summarise(word_count = n(),
             sad_count = sum(sad, na.rm = T), 
             pos_count = sum(positive, na.rm = T), 
             neg_count = sum(negative, na.rm = TRUE), 
-            sad_pct = round(sum(sad, na.rm = T) / n() *100, 4),
-            neg_pos_ratio = round(sum(negative, na.rm = T)/sum(positive, na.rm = TRUE), 4), 
-            sad_pos_ratio = round(sum(sad, na.rm = TRUE)/sum(positive, na.rm = TRUE), 4)) %>% 
+            sad_total_ratio = round(exp(sad_count)/ exp(word_count), 4),
+            neg_pos_ratio = round(exp(neg_count)/exp(pos_count), 4), 
+            sad_pos_ratio = round(exp(sad_count)/exp(pos_count), 4)) %>% 
   mutate(bias = if_else(neg_pos_ratio > 1, 
                         "Negative", 
                         if_else (neg_pos_ratio< 1,
                                  "Positive",
                                  if_else(neg_pos_ratio == 1, 
-                                         "Equal", "NA")))) %>% 
-  ungroup
+                                         "Equal", "NA")))) 
 
-Nov18_Features_Sent <- Nov18Features_Lyrics %>% 
-  right_join(Nov18_Sent, by = "song_artist")
+Nov18_Features_Sent <- Nov18_Sent %>% 
+  right_join(Nov18Features, by = "song_artist") 
+
+#
+
+%>% 
+  summarise(rumination = mean(rumination),
+            baseline = mean(Baseline), 
+            musebaq = mean(musebaq), 
+            reg.use_1 = mean(reg.use_1), 
+            valence = mean(valence),
+            energy = mean(energy), 
+            sad_count = mean(sad_count),
+            neg_pos_ratio = mean(neg_pos_ratio), 
+            sad_pos_ratio = mean(sad_pos_ratio), 
+            )
 
 ```
 
 #Look at distributions of key variables 
+rumination 
 baseline
 musebaq
-rumination 
+reg.use_1
 valence 
 energy 
 sad_count
@@ -88,16 +102,28 @@ neg_pos_ratio
 sad_pos_ratio
 
 ```{r}
-par(mfcol = c(4, 2))
+Nov18_Music_Cor_Vars_Complete <- Nov18_Features_Sent %>% 
+  group_by(ResponseId) %>% 
+  select(Baseline, rumination, musebaq, reg.use_1) %>% 
+  as.matrix() %>% 
+  Hmisc::rcorr(type = "spearman")
 
-vars <- c("Baseline", "musebaq", "rumination", "valence", "energy", "sad_count", "neg_pos_ratio", "sad_pos_ratio")
+Nov18_Music_Cor_Vars_Spotify <- Nov18_Features_Sent %>% 
+  select(Baseline, rumination, musebaq, reg.use_1, valence, energy) %>%
+  drop_na() %>% 
+  as.matrix() %>% 
+  Hmisc::rcorr(type = "spearman")
 
-for(var in vars){
-  dev.new()
-  hist(Nov18_Features_Sent$i, 20)
-}
-
+Nov18_Music_Cor_Vars_Lyrics <- Nov18_Features_Sent %>% 
+  select(Baseline, rumination, musebaq, reg.use_1, valence, energy, sad_pct, neg_pos_ratio, sad_pos_ratio) %>%
+  mutate_if(is.numeric, list(~na_if(., Inf))) %>% 
+  drop_na() %>% 
+  as.matrix() %>% 
+  Hmisc::rcorr(type = "spearman")
 ```
 
+```{r}
+Nov18_Music_Cor_Vars_Complete
+```
 
 
