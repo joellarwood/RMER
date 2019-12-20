@@ -31,7 +31,101 @@ options(scipen=999, digits=3)
 
 Nov18Features_Lyrics <- read_rds(here::here("data", "RMER_November2018_Spotify_Lyrics.rds")) 
 Nov18Features <- read_rds(here::here("data", "RMER_November2018_Spotify.rds"))
+```
 
+
+```{r BRECVEMA}
+
+
+mech <- Nov18Features %>% select(BSR:Appraisal) %>% names() 
+
+BRECVEMA_Chi2 <- Nov18Features %>% 
+  drop_na() %>% 
+  select(mech) %>% 
+  map( ~ .x-1) %>% 
+  as_tibble()
+
+
+for (i in 1:8) {
+  table <- table(BRECVEMA_Chi2[,i]) 
+  chi <- chisq.test(table)
+  stat <- round(chi[["statistic"]][["X-squared"]], 2)
+  p <- round(chi[["p.value"]], 3)
+  name <- colnames(BRECVEMA_Chi2[, i])
+  df <- chi[["parameter"]][["df"]]
+  count <- data.frame(table)
+  yes <- (count)[1,2]
+  no <- (count)[2,2]
+  result <- glue::glue("The statistic for {name} was X^2({df}){stat}, p = {p}. {yes} responded yes 
+                       and {no} responded no")
+  print(result)
+}
+
+```
+
+BRECVEMA Correlations 
+```{r}
+
+Nov18Features %>% 
+  select(rumination, musebaq, mech) %>% 
+  apaTables::apa.cor.table(filename = here::here("docs", "Nov18_BECVEMACor.rtf"))
+
+```
+
+Here we can see that people higher in rumination were more likely to experience Conditioning, contagion and memories
+
+Here is an exploration of how they relate to changes in sadness 
+
+```{r}
+Nov18LongBRECVEMA <- Nov18BasicClean  %>% 
+  select(ResponseId, 
+         Baseline:rumination, 
+         hours.listen,
+         mech,
+         musebaq) %>% 
+  pivot_longer(cols = PostInduction:PostListening, 
+               names_to = "Timepoint", 
+               names_ptypes = factor(), 
+               values_to = "Sadness") %>% 
+  map_at(.at = vars(mech), 
+         .f = as_factor) %>% 
+  map_at(.at = vars(mech), 
+         .f = fct_recode, 
+         "Yes" = "0", 
+         "No" = "1") %>% 
+  map_at(.at = vars(mech), 
+         .f = fct_relevel, "No") %>% 
+  as_tibble() 
+  
+Hypothesised <- lmerTest::lmer(Sadness~ 1+Timepoint*rumination +  (1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
+
+traits <- lmerTest::lmer(Sadness~ 1+Timepoint*rumination + Timepoint*Baseline + Timepoint*musebaq+ (1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
+
+BRECVEMA <- lmerTest::lmer(Sadness~ 1+Timepoint*rumination + Timepoint*Conditioning + Timepoint*Memory + Timepoint*Contagion+ Timepoint*BSR+(1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
+
+BRECVEMAtraits <- lmerTest::lmer(Sadness~ 1+Timepoint*rumination + Timepoint*Baseline + Timepoint*musebaq+ Timepoint*Contagion + Timepoint*Conditioning + Timepoint*Memory +Timepoint*BSR+ (1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
+
+anova(Hypothesised, traits, BRECVEMA) %>% 
+  kableExtra::kable() %>% 
+  kableExtra::kable_styling()
+
+anova(Hypothesised, BRECVEMA)
+
+anova(BRECVEMA, traits)
+
+anova(BRECVEMAtraits, traits)
+
+tab_model(BRECVEMAtraits, 
+          show.std = TRUE, 
+          show.aic = TRUE)
+
+```
+
+I added the BRECVEMA mechanism to the intially preferred model 
+
+
+
+```{r ProcessLyricSent}
 ## Processing of lyrics taken from https://www.rcharlie.com/post/fitter-happier/
 
 sad_words <- tidytext::get_sentiments("nrc") %>% 
@@ -74,56 +168,26 @@ Nov18_Sent <- Nov18Features_Lyrics %>%
 Nov18_Features_Sent <- Nov18_Sent %>% 
   right_join(Nov18Features, by = "song_artist") 
 
-#
-
-%>% 
-  summarise(rumination = mean(rumination),
-            baseline = mean(Baseline), 
-            musebaq = mean(musebaq), 
-            reg.use_1 = mean(reg.use_1), 
-            valence = mean(valence),
-            energy = mean(energy), 
-            sad_count = mean(sad_count),
-            neg_pos_ratio = mean(neg_pos_ratio), 
-            sad_pos_ratio = mean(sad_pos_ratio), 
-            )
-
 ```
 
-#Look at distributions of key variables 
-rumination 
-baseline
-musebaq
-reg.use_1
-valence 
-energy 
-sad_count
-neg_pos_ratio
-sad_pos_ratio
-
+#Look at distributions of key variables with rumination 
+## Spotify data 
 ```{r}
-Nov18_Music_Cor_Vars_Complete <- Nov18_Features_Sent %>% 
-  group_by(ResponseId) %>% 
-  select(Baseline, rumination, musebaq, reg.use_1) %>% 
-  as.matrix() %>% 
-  Hmisc::rcorr(type = "spearman")
 
-Nov18_Music_Cor_Vars_Spotify <- Nov18_Features_Sent %>% 
-  select(Baseline, rumination, musebaq, reg.use_1, valence, energy) %>%
+Nov18_Features_Sent %>% 
+  select(rumination, musebaq, valence, energy) %>% 
   drop_na() %>% 
   as.matrix() %>% 
   Hmisc::rcorr(type = "spearman")
+  
+```
 
-Nov18_Music_Cor_Vars_Lyrics <- Nov18_Features_Sent %>% 
-  select(Baseline, rumination, musebaq, reg.use_1, valence, energy, sad_pct, neg_pos_ratio, sad_pos_ratio) %>%
-  mutate_if(is.numeric, list(~na_if(., Inf))) %>% 
+## Spotify and lyric data 
+```{r}
+Nov18_Features_Sent %>% 
+  select(rumination, musebaq, valence, energy, contains("_ratio")) %>% 
   drop_na() %>% 
   as.matrix() %>% 
   Hmisc::rcorr(type = "spearman")
 ```
-
-```{r}
-Nov18_Music_Cor_Vars_Complete
-```
-
 

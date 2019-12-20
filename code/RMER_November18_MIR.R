@@ -46,8 +46,8 @@ possible_feats <- possibly(track_audio_features, otherwise = tibble())
 Nov18Features <- Nov18BasicClean %>% 
   mutate(audio_features = map2(sad.song.artist, sad.song, possible_feats)) %>% 
   unnest(cols = c(audio_features)) %>% 
-  as_tibble() %>%  
-  
+  as_tibble() 
+
 
 Nov18Features <- Nov18Features %>% 
   mutate(song_artist = glue::glue("{song_rtn}_{artist_rtn}"))
