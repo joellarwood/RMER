@@ -1,0 +1,103 @@
+---
+title: "Stepwise Automation"
+author: "joellarwood"
+date: "2020-01-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+Here I implement the stepwise AIC to select models https://cran.r-project.org/web/packages/cAIC4/cAIC4.pdf and https://arxiv.org/abs/1803.05664 
+```{r}
+library(cAIC4)
+library(tidyverse)
+library(sjPlot)
+library(lme4)
+```
+
+
+```{r}
+ExploreData <- read_rds(here:::here("data", "Nov18LongExplore.rds"))
+```
+
+Here I specify the model terms 
+```{r}
+SatModel <- lme4::lmer(formula = Sadness ~
+                         1+
+                         Timepoint*rumination + 
+                         Timepoint*Baseline + 
+                         Timepoint*musebaq+ 
+                         Timepoint*BSR + 
+                         Timepoint*Entrainment + 
+                         Timepoint*Contagion +
+                         Timepoint*Imagery+ 
+                         Timepoint*Memory+
+                         Timepoint*Expectancy+
+                         Timepoint*Appraisal+ 
+                         (1 | ResponseId), 
+    data = ExploreData)
+```
+
+This is a fully unconstrained stepback approach 
+```{r}
+
+UnconStepBack <- cAIC4::stepcAIC(object = SatModel, 
+                                 numberOfSavedModels = 1, 
+                                 direction = "backward", 
+                                 allowNoIntercept = FALSE
+                                 )
+
+
+UnconFormula <- UnconStepBack[["finalModel"]]@call[["formula"]]
+
+UnconModel <- lme4::lmer(formula =UnconFormula, 
+                         data = ExploreData)
+tab_model(UnconModel, 
+          show.est = FALSE, 
+          show.std = TRUE, 
+          show.ci = FALSE)
+```
+
+Here rumination must be included
+```{r}
+
+RumStepBack <- cAIC4::stepcAIC(object = SatModel, 
+                                 numberOfSavedModels = 1, 
+                                 direction = "backward", 
+                                 allowNoIntercept = FALSE, 
+                               keep = list(~Timepoint*rumination)
+                                 )
+
+
+RumFormula <- RumStepBack[["finalModel"]]@call[["formula"]]
+
+RumModel <- lme4::lmer(formula =RumFormula, 
+                         data = ExploreData)
+tab_model(RumModel, 
+          show.est = FALSE, 
+          show.std = TRUE, 
+          show.ci = FALSE)
+```
+
+Here you will note that these models are identical
+```{r}
+
+tab_model(RumModel, UnconModel)
+plot_model(RumModel
+           )
+ExploreModelPlot <- sjPlot::plot_model(RumModel, 
+                   type = "int", 
+                   mdrt.values = "meansd", 
+                   show.data = TRUE, 
+                   jitter = .2, 
+                   ci.lvl = .95, 
+                   show.values = TRUE)[[1]] +
+  theme_classic()
+
+ggsave(here::here("docs", "Nov18_RMER_Explore_Plot.svg"))
+
+
+
+```
+
+

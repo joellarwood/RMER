@@ -96,7 +96,11 @@ Nov18LongBRECVEMA <- Nov18BasicClean  %>%
   map_at(.at = vars(mech), 
          .f = fct_relevel, "No") %>% 
   as_tibble() 
+
+write_rds(Nov18LongBRECVEMA, 
+          here::here("data", "Nov18LongExplore.rds"))
   
+
 Hypothesised <- lmerTest::lmer(Sadness~ 1+Timepoint*rumination +  (1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
 
 traits <- lmerTest::lmer(Sadness~ 1+Timepoint*rumination + Timepoint*Baseline + Timepoint*musebaq+ (1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
@@ -113,7 +117,7 @@ anova(Hypothesised, BRECVEMA)
 
 anova(BRECVEMA, traits)
 
-anova(BRECVEMAtraits, traits)
+anova(BRECVEMAtraits, traits, BRECVEMA)
 
 tab_model(BRECVEMAtraits, 
           show.std = TRUE, 
@@ -121,7 +125,36 @@ tab_model(BRECVEMAtraits,
 
 ```
 
-I added the BRECVEMA mechanism to the intially preferred model 
+# Fully exploratory model 
+
+```{r}
+FullExploreSyntax <- Sadness~ 1+Timepoint*rumination + Timepoint*Baseline + Timepoint*musebaq+ Timepoint*BSR + Timepoint*Entrainment + Timepoint*Contagion +Timepoint*Imagery+ Timepoint*Memory+Timepoint*Expectancy+Timepoint*Appraisal+ (1 | ResponseId)
+
+ExploratoryModel <- buildmer::buildmer(FullExploreSyntax,
+                        data=drop_na(Nov18LongBRECVEMA),
+                        direction='backward',
+                        control=lmerControl(optimizer='bobyqa'))
+
+ExploratoryModelForceRum <- buildmer::buildmer(FullExploreSyntax,
+                                       include = ~ Timepoint*rumination,
+                        data=drop_na(Nov18LongBRECVEMA),
+                        direction='backward',
+                        control=lmerControl(optimizer='bobyqa'))
+
+anova(ExploratoryModelForceRum@model, ExploratoryModel@model)
+
+tab_model(ExploratoryModelForceRum@model, ExploratoryModel@model)
+
+ExploreExtractPlusRum <- lmer(formula = Sadness ~ 1 + Timepoint + 
+    Baseline + musebaq + BSR + Timepoint:BSR + Contagion + Timepoint:Contagion +
+    Memory + Timepoint:Memory + Appraisal + Timepoint:Appraisal + Timepoint*rumination + 
+    (1 | ResponseId), data = drop_na(Nov18LongBRECVEMA))
+
+anova(Hypothesised, ExploreExtract, ExploreExtractPlusRum)
+
+tab_model(ExploreExtractPlusRum)
+```
+
 
 
 
