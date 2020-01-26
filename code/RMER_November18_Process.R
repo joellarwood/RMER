@@ -7,12 +7,18 @@ library(tidyverse)
 ## Load in Data
 testvalues <- c("test", "joel test")
 
+
+reverse_code <- function(x, max)(
+  (max  + 1) - x
+)
+
 Nov18Raw <- qualtRics::read_survey(here::here("data", "RMER_November2018.csv")) %>% 
   replace_with_na_all(condition = ~.x == -99) %>% 
   distinct(ProlificID, .keep_all = TRUE) %>%  
   filter(Finished == 1) %>%  
   filter(DistributionChannel == "anonymous") %>%  
-  filter(sad.song != testvalues)
+  filter(sad.song != testvalues) %>% 
+  tibble::rowid_to_column("ID")
   
 visdat::vis_dat(Nov18Raw)
 
@@ -21,6 +27,12 @@ reguselower <-as.numeric(quantile(Nov18Raw$reg.use_1, .33, na.rm = TRUE))
 
 # keep only full responses
 Nov18BasicClean <- Nov18Raw %>%  
+  as_tibble() %>% 
+  dplyr::mutate(rrq_6_Original = rrq_6, 
+                rrq_9_Original = rrq_9, 
+                rrq_10_Orignal = rrq_10) %>% 
+  dplyr::mutate_at(c("rrq_6", "rrq_9", "rrq_10"), 
+                   reverse_code, max = 5) %>% 
   dplyr::mutate(musebaq = rowSums(dplyr::select(., musebaq_1:musebaq_9)),
                 Baseline = rowSums(dplyr::select(., deq_1_1:deq_1_4)),
                 PostInduction = rowSums(dplyr::select(., deq_2_1: deq_2_4)),
@@ -33,7 +45,11 @@ Nov18BasicClean <- Nov18Raw %>%
                                                    "Use", 
                                                    if_else(reg.use_1 <= reguselower,
                                                            "Not Use", 
-                                                           "Middle")))) %>%  
+                                                           "Middle"))), 
+                gender = recode_factor(gender, 
+                                       "0" = "male", 
+                                       "1" = "female", 
+                                       "2" = "neither")) %>%  
   dplyr::mutate(BSR = mecscale_1 - 1, 
                 Entrainment = mecscale_2 - 1, 
                 Conditioning = mecscale_3 - 1, 
@@ -42,8 +58,36 @@ Nov18BasicClean <- Nov18Raw %>%
                 Memory = mecscale_6 - 1, 
                 Expectancy = mecscale_7 - 1, 
                 Appraisal = mecscale_8 - 1) %>% 
-  dplyr::distinct(ProlificID, .keep_all = TRUE)
-
+  map_at(.at = vars(c("BSR", 
+                      "Entrainment", 
+                      "Conditioning", 
+                      "Contagion", 
+                      "Imagery", 
+                      "Memory",
+                      "Expectancy",
+                      "Appraisal")), 
+         .f = as_factor) %>% 
+  map_at(.at = vars(c("BSR", 
+                      "Entrainment", 
+                      "Conditioning", 
+                      "Contagion", 
+                      "Imagery", 
+                      "Memory",
+                      "Expectancy",
+                      "Appraisal")), 
+         .f = fct_recode, 
+         "No" = "1", 
+         "Yes" = "0") %>% 
+  map_at(.at = vars(c("BSR", 
+                      "Entrainment", 
+                      "Conditioning", 
+                      "Contagion", 
+                      "Imagery", 
+                      "Memory",
+                      "Expectancy",
+                      "Appraisal")), 
+         .f = fct_relevel, "No") %>% 
+  as_tibble()
 #export 
 Nov18BasicClean %>% 
   write_rds(here::here("data", "RMER_November2018_ProcessedWide.rds"))
