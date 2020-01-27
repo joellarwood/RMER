@@ -1,0 +1,270 @@
+---
+title: "Rumination, Emotion Induction Mechanisms and Sad Music"
+author: "Joel Larwood"
+output: 
+  html:
+    code_folding: hide
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+---
+
+```{r setOpts, echo=TRUE}
+knitr::opts_chunk$set(autodep = TRUE, warning = FALSE, message = FALSE)
+
+options(digits=3)
+```
+
+```{r pacakgeLoad, warnings = FALSE, message = FALSE}
+library(tidyverse)
+library(lmerTest)
+library(buildmer)
+library(psych)
+library(kableExtra)
+library(apa)
+library(interactions)
+```
+
+The code to clean the orginal data can be seen [here]() and run with the following code chunk
+```{r eval = FALSE}
+source(here::here("code", "RMER_November18_Process.R"))
+```
+
+The code to get the musical information can be seen [here]() and run with the following code chunk. **Be warned the script may take up to 30 minutes to complete**. The [`data`]()folder contains data files which have the lyrics as well as the sentiment metrics. 
+```{r eval = FALSE}
+source(here::here("code", "RMER_November18_MIR.R"))
+```
+
+# Data joins 
+
+The data from spotify and the data from self report were joined together 
+```{r}
+data <- read_rds(here::here("data", "RMER_November2018_ProcessedWide.rds")) %>% 
+  left_join(read_rds(here::here("data", "RMER_November2018_Features_Sentiment.rds")), by = "ID")
+```
+
+# Descriptives of data
+
+## Demographic Measures
+
+### Age 
+The mean age was `r round(mean(data$age, na.rm = TRUE), 2)` with a standard deviation of `r round(sd(data$age, na.rm = TRUE), 2)`
+
+### Gender 
+The gender counts can be seen in the table below. 
+
+```{r Gender}
+data %>% 
+  group_by(gender) %>% 
+  summarise(gender_count = n()) %>% 
+  knitr::kable(format = "html") %>% 
+  kableExtra::kable_styling()
+```
+
+
+## Trait measures 
+1. Rumination
+2. MUSEBAQ - Emotion and Cognitive regulation
+
+```{r describe demographics}
+data %>% 
+  select(rumination, musebaq) %>% 
+  psych::describe() %>% 
+    select(n, mean, sd, min, max) %>% 
+  knitr::kable(digits =2, 
+               format = "html") %>% 
+  kableExtra::kable_styling()
+```
+
+Additionally the internal consistency for 
+  a) rumination was good, `r round(psych::alpha(x = select(data, rrq_1:rrq_12))$total$raw_alpha, 2)`  
+  b) the emotion and cognitive regulation scale of the MUSEBAQ was also good `r round(psych::alpha(x = select(data, musebaq_1:musebaq_9))$total$raw_alpha, 2)`
+
+
+## Song measures 
+Note: The sentiment scores were calculated in the [MIR Script]()
+
+```{r}
+data %>% 
+  select(valence, energy, ) %>% 
+  psych::describe() %>% 
+  select(n, mean, sd, min, max) %>% 
+  knitr::kable(digits =2, format = "html") %>% 
+  kableExtra::kable_styling()
+
+
+data %>% 
+  ggplot2::ggplot(aes(x = valence,
+                      y = energy, 
+                      )) +
+  geom_point(size = 2, alpha = .5, 
+             aes(color = factor(bias))) +
+  scale_color_manual(values = c("yellow", "red", "green")) +
+  theme_classic() +
+  labs(color = "Bias of lyric \nsentiment count")
+
+table(data$bias) %>% 
+  kable(col.names = c("Lyric sentiment bias", "Frequency")) %>% 
+  kable_styling()
+  
+```
+
+# Correlation Matrix 
+
+
+
+# Manipulation Check 
+
+The induction of sadness was succesful `r apa::t_apa(apa::t_test(data$PostInduction, data$Baseline, paired = TRUE), format = "markdown")`
+
+# Pre-to-Post testing {.tabset}
+
+```{r reshapedata}
+
+Nov18Long <- data %>% 
+  select(ResponseId, 
+         musebaq:Appraisal) %>% 
+  pivot_longer(cols = PostInduction:PostListening, 
+               names_to = "Timepoint", 
+               names_ptypes = factor(), 
+               values_to = "Sadness") %>% 
+  mutate(Timepoint = fct_relevel(Timepoint, 
+                                "PostInduction"))
+```
+
+## Hypothesis Test 
+We predicted that sadness would decrease from pre to post listening and that rumination would not influence this. 
+
+This was not the case, with sadness increasing when not accounting for rumination,`r apa::t_apa(apa::t_test(data$PostListening, data$PostInduction, paired = TRUE), format = "markdown")` , and an intertaction between timepoint and rumination
+```{r HypothesisTest}
+PostInductionTimePoints <- lmerTest::lmer(Sadness~1 + Timepoint  + rumination + Timepoint:rumination + (1|ResponseId), data = filter(Nov18Long, Timepoint != "Baseline"))
+
+sjPlot::tab_model(PostInductionTimePoints, 
+                  show.std = TRUE, 
+                  show.aic = TRUE,
+                  show.df = TRUE
+                  )
+```
+
+```{r}
+minrum <- mean(Nov18Long$rumination, na.rm = TRUE) - sd(Nov18Long$rumination, na.rm = TRUE)
+meanrum <- mean(Nov18Long$rumination, na.rm = TRUE)
+plusrum <- mean(Nov18Long$rumination, na.rm = TRUE) + sd(Nov18Long$rumination, na.rm = TRUE)
+
+confirm_plot <- emmeans::emmip(emmeans::ref_grid(PostInductionTimePoints, 
+                                 list(rumination = c(plusrum, meanrum, minrum), Timepoint = c("PostInduction", "PostListening"))), 
+               rumination~Timepoint, 
+               CI = TRUE)  +
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 20, base_family = "Times New Roman") 
+
+confirm_plot
+
+```
+
+
+```{r}
+emmeans::contrast(emmeans::emmeans(PostInductionTimePoints, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum), Timepoint = c("PostInduction", "PostListening")))), 
+                  "pairwise", 
+                  by = "rumination")
+```
+
+
+
+```{r}
+DummyLong <- Nov18Long %>% 
+  filter(Timepoint != "Baseline") %>% 
+  mutate(Dummy = if_else(Timepoint == "PostInduction", 0, 1))
+
+jn <- interactions::johnson_neyman(model = lmerTest::lmer(Sadness~1 + Dummy  + rumination + Dummy:rumination + (1|ResponseId), data = DummyLong), 
+                             pred = "Dummy", 
+                             modx = "rumination")
+
+
+upperJN <- jn$bounds[[2]]
+```
+
+Johnson-Neyman intervals showed that the rumination did not predict increased sadness at post listening when scores were less that `r upperJN`
+
+```{r}
+jn$plot
+```
+
+## Exploring the role of traits 
+
+To explore the role of traits we did a greedy stepback regression using `buildmer`. All interactions between traits, including baseline mood (as a depression proxy), were included. 
+
+The returned model is below
+```{r}
+
+traitexplore <- buildmer::buildmer(formula = Sadness~ 1+Timepoint*Baseline + Timepoint*musebaq +Timepoint*rumination + (1 | ResponseId),
+                                   data = Nov18Long, 
+                                   direction='backward',
+                                   control=lmerControl(optimizer='bobyqa'))@model
+
+sjPlot::tab_model(traitexplore)
+
+exploreplots <- sjPlot::plot_model(traitexplore, 
+                   type = "int", 
+                   mdrt.values = "meansd", 
+                   title = "") 
+
+cowplot::plot_grid(exploreplots[[1]], exploreplots[[2]], 
+                   nrow = 2, 
+                   ncol =1)
+
+```
+
+## Exploring the role of BRECVEMA mechanisms 
+
+```{r}
+BRECVEMAexplore <- buildmer::buildmer(Sadness~ 1+Timepoint*BSR +Timepoint*Entrainment + Timepoint*Contagion +Timepoint*Imagery+ Timepoint*Memory+Timepoint*Expectancy+Timepoint*Appraisal+ (1 | ResponseId), 
+                                      data = Nov18Long, 
+                                      direction='backward',
+                                      control=lmerControl(optimizer='bobyqa'))@model
+
+sjPlot::tab_model(BRECVEMAexplore, 
+                  show.std = TRUE)
+
+
+exploreplots <- sjPlot::plot_model(BRECVEMAexplore, 
+                   type = "int", 
+                   title = "") 
+
+cowplot::plot_grid(exploreplots[[1]], exploreplots[[2]], exploreplots[[3]], exploreplots[[4]], 
+                   ncol =2, 
+                   nrow = 2, 
+                   labels = NULL)
+```
+
+## All predictors 
+```{r}
+AllExplore <- buildmer::buildmer(Sadness~ 1+Timepoint*BSR +Timepoint*Entrainment + Timepoint*Contagion +Timepoint*Imagery+ Timepoint*Memory+Timepoint*Expectancy+Timepoint*Appraisal+ 1+Timepoint*Baseline + Timepoint*musebaq +Timepoint*rumination +(1 | ResponseId), 
+                                 data = Nov18Long, 
+                                 direction='backward',
+                                 control=lmerControl(optimizer='bobyqa'))@model
+
+sjPlot::tab_model(AllExplore)
+
+Allexploreplots <- sjPlot::plot_model(AllExplore, 
+                   type = "int", 
+                   title = "") 
+
+cowplot::plot_grid(Allexploreplots[[1]], Allexploreplots[[2]], Allexploreplots[[3]], Allexploreplots[[4]], Allexploreplots[[5]], Allexploreplots[[6]],
+                   ncol =2, 
+                   nrow = 3, 
+                   labels = NULL)
+```
+
+## Compariosn of all models 
+
+```{r}
+
+```
+
