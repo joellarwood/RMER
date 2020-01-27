@@ -49,15 +49,17 @@ Nov18BasicClean <- Nov18Raw %>%
                 gender = recode_factor(gender, 
                                        "0" = "male", 
                                        "1" = "female", 
-                                       "2" = "neither")) %>%  
-  dplyr::mutate(BSR = mecscale_1 - 1, 
-                Entrainment = mecscale_2 - 1, 
-                Conditioning = mecscale_3 - 1, 
-                Contagion = mecscale_4 - 1, 
-                Imagery = mecscale_5 - 1, 
-                Memory = mecscale_6 - 1, 
-                Expectancy = mecscale_7 - 1, 
-                Appraisal = mecscale_8 - 1) %>% 
+                                       "2" = "neither")) %>% 
+  dplyr::mutate_at(.vars = vars(contains("mec")),
+                   .funs = ~ .-1) %>% 
+  dplyr::mutate(BSR = mecscale_1, 
+                Entrainment = mecscale_2, 
+                Conditioning = mecscale_3, 
+                Contagion = mecscale_4, 
+                Imagery = mecscale_5, 
+                Memory = mecscale_6, 
+                Expectancy = mecscale_7, 
+                Appraisal = mecscale_8) %>% 
   map_at(.at = vars(c("BSR", 
                       "Entrainment", 
                       "Conditioning", 
