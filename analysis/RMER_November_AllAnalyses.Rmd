@@ -124,7 +124,7 @@ Additionally the internal consistency for
 ```{r CorMat, echo = FALSE}
 
 apaTables::apa.cor.table(data = select(data,
-                                       rumination, musebaq, Baseline, contains("mec")), 
+                                       rumination, musebaq, Baseline, PostInduction, contains("mec")), 
                          filename = here::here("docs", "TraitCorrelations.rtf")) 
 
 ```
@@ -132,11 +132,11 @@ apaTables::apa.cor.table(data = select(data,
 ```{r corPlot}
 
 M <- cor(select(data, 
-                rumination, musebaq, Baseline, contains("mec")), 
+                rumination, musebaq, Baseline, PostInduction, contains("mec")), 
          use = "pairwise.complete.obs")
 
 res1 <- corrplot::cor.mtest(select(data, 
-                rumination, musebaq, Baseline, contains("mec")), conf.level = .95)$p
+                rumination, musebaq, Baseline, PostInduction, contains("mec")), conf.level = .95)$p
 
 
 shade <- corrplot::corrplot(M, 
@@ -217,7 +217,7 @@ confirm_plot <- emmeans::emmip(emmeans::ref_grid(PostInductionTimePoints,
   ggplot2::xlab(element_blank()) + 
   ggplot2::labs(subtitle = "Effect of rumination in planned model", hjust = 0) +
   ggplot2::theme_classic(base_size = 16, base_family = "Times New Roman") + 
-  ggplot2::scale_y_continuous(limits = c(10,16))
+  ggplot2::scale_y_continuous(limits = c(10,18))
                            
 
 confirm_plot
@@ -268,7 +268,8 @@ BRECVEMAexplore <- buildmer::buildmer(Sadness~ 1+Timepoint*BSR +Timepoint*Entrai
                                       control=lmerControl(optimizer='bobyqa'))@model
 
 sjPlot::tab_model(BRECVEMAexplore, 
-                  show.std = TRUE)
+                  show.std = TRUE, 
+                  pred.labels = FALSE)
 
 
 ```
@@ -285,6 +286,7 @@ AllExplore <- buildmer::buildmer(Sadness~ 1+Timepoint*BSR +Timepoint*Entrainment
 ```{r AllExploreVis}
 sjPlot::tab_model(AllExplore)
 
+
 RumExpl <- emmeans::emmip(emmeans::ref_grid(AllExplore, 
                                  list(rumination = c(plusrum, meanrum, minrum), Timepoint = c("PostInduction", "PostListening"))), 
                rumination~Timepoint, 
@@ -294,7 +296,6 @@ RumExpl <- emmeans::emmip(emmeans::ref_grid(AllExplore,
                                 name = "Rumination \nScore")+
   ggplot2::ylab("Predicted Sadness Score") + 
   ggplot2::xlab("Timepoint") +
-  ggplot2::theme_classic(base_size = 20, base_family = "Times New Roman") + 
   scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
   ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
                                 name = "Rumination \nScore")+
@@ -302,9 +303,20 @@ RumExpl <- emmeans::emmip(emmeans::ref_grid(AllExplore,
   ggplot2::xlab(element_blank()) + 
   ggplot2::labs(subtitle = "Effect of rumination in exploratory model") +
   ggplot2::theme_classic(base_size = 16, base_family = "Times New Roman") + 
-  ggplot2::scale_y_continuous(limits = c(10,16))
+  ggplot2::scale_y_continuous(limits = c(10,18))
 
 RumExpl
+```
+
+Johnson-neyman intervals for exploratory models 
+```{r}
+
+interactions::johnson_neyman(model = 
+                               lmerTest::lmer(Sadness ~ 1 + Dummy + BSR + Dummy:BSR + Entrainment + Contagion + Dummy:Contagion + Imagery + Memory + Dummy:Memory + Appraisal + Dummy:Appraisal + Baseline + Dummy:Baseline + rumination + Dummy:rumination + (1 | ResponseId), 
+                                              data = DummyLong),
+                             pred = Dummy, 
+                             modx = rumination
+                             )
 ```
 
 <!-- Force rumination:timepoint to remain in the model -->
@@ -357,6 +369,150 @@ plots <- cowplot::plot_grid(confirm_plot +
 cowplot::plot_grid(plots, 
                    legend, 
                    ncol = 2, 
-                   rel_widths = c(2, 1))
+                   rel_widths = c(2, .8))
+```
+
+Rumination slopes
+```{r}
+NoMech <- emmeans::emmeans(AllExplore, 
+                           ~rumination*Timepoint, 
+                           at = (list(rumination = c(minrum, plusrum, meanrum),
+                                      Timepoint = c("PostInduction",
+                                                    "PostListening"), 
+                                      Contagion = "No", 
+                                      Entrainment = "No", 
+                                      BSR = "No", 
+                                      Memory = "No", 
+                                      Imagery = "No",
+                                      Appraisal = "No")))
+
+emmeans::contrast(NoMech, 
+                  "pairwise", 
+                  by = "rumination")
+
+AllMech <- emmeans::emmeans(AllExplore, 
+                            ~rumination*Timepoint, 
+                            at = (list(rumination = c(minrum, plusrum, meanrum),
+                                       Timepoint = c("PostInduction",
+                                                     "PostListening"), 
+                                       Contagion = "Yes", 
+                                       Entrainment = "Yes", 
+                                       BSR = "Yes", 
+                                       Memory = "Yes", 
+                                       Imagery = "Yes",
+                                       Appraisal = "Yes")))
+emmeans::contrast(AllMech, 
+                  "pairwise", 
+                  by = c("rumination"))
+
+ContOnly <- emmeans::emmeans(AllExplore, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction"), 
+                                              Contagion = "Yes", 
+                                              Entrainment = "No", 
+                                              BSR = "No", 
+                                              Memory = "No", 
+                                              Imagery = "No",
+                                              Appraisal = "No")))
+emmeans::contrast(ContOnly, 
+                  "pairwise", 
+                  by = c("rumination"))
+
+ContApp <- emmeans::emmeans(AllExplore, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction"), 
+                                              Contagion = "Yes", 
+                                              Entrainment = "No", 
+                                              BSR = "No", 
+                                              Memory = "No", 
+                                              Imagery = "No",
+                                              Appraisal = "Yes")))
+emmeans::contrast(ContApp, 
+                  "pairwise", 
+                  by = c("rumination"))
+```
+
+Plot scenarios 
+```{r}
+NoMechPlot <- emmeans::emmip(NoMech,
+                  rumination~Timepoint, 
+                  CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "No mechanisms occur") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+
+AllMechPlot <- emmeans::emmip(AllMech, 
+                                   rumination~Timepoint, 
+                                   CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "All included mechanisms occur") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+ContOnlyPlot <- emmeans::emmip(ContOnly, 
+                                   rumination~Timepoint, 
+                                   CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "Only emotional contagion \noccurs") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+ContAppPlot <- emmeans::emmip(ContApp, 
+                                   rumination~Timepoint, 
+                                   CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "Only emotional contagion and \nappraisal occur") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+MechGrid <- cowplot::plot_grid(NoMechPlot + theme(legend.position = "none"), 
+                               AllMechPlot + theme(legend.position = "none"), 
+                               ContOnlyPlot + theme(legend.position = "none"),
+                               ContAppPlot + theme(legend.position = "none")) 
+
+MechGrid <- cowplot::plot_grid(MechGrid, 
+                               legend, 
+                               rel_widths = c(2, .5))
+
+MechGrid
+                               
 ```
 
