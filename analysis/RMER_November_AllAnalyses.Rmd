@@ -410,12 +410,13 @@ ContOnly <- emmeans::emmeans(AllExplore,
                                    at = (list(rumination = c(minrum, plusrum, meanrum),
                                               Timepoint = c("PostListening",
                                                             "PostInduction"), 
-                                              Contagion = "Yes", 
-                                              Entrainment = "No", 
-                                              BSR = "No", 
-                                              Memory = "No", 
+                                              Contagion = "Yes",
+                                              Entrainment = "No",
+                                              BSR = "No",
+                                              Memory = "No",
                                               Imagery = "No",
-                                              Appraisal = "No")))
+                                              Appraisal = "No"
+                                              )))
 emmeans::contrast(ContOnly, 
                   "pairwise", 
                   by = c("rumination"))
@@ -426,12 +427,25 @@ ContApp <- emmeans::emmeans(AllExplore,
                                               Timepoint = c("PostListening",
                                                             "PostInduction"), 
                                               Contagion = "Yes", 
-                                              Entrainment = "No", 
-                                              BSR = "No", 
-                                              Memory = "No", 
+                                              Entrainment = "No",
+                                              BSR = "No",
+                                              Memory = "No",
                                               Imagery = "No",
                                               Appraisal = "Yes")))
 emmeans::contrast(ContApp, 
+                  "pairwise", 
+                  by = c("rumination"))
+```
+### Contagion 
+```{r}
+ContAppAv <- emmeans::emmeans(AllExplore, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction"), 
+                                              Contagion = "Yes", 
+                                              Appraisal = "Yes")))
+emmeans::contrast(ContAppAv, 
                   "pairwise", 
                   by = c("rumination"))
 ```
@@ -514,5 +528,91 @@ MechGrid <- cowplot::plot_grid(MechGrid,
 
 MechGrid
                                
+```
+
+# Follow up fit of Contagion and Appraisal {tabset}
+
+This is a useful further exploratory analysis 
+
+## Model Fitting
+
+Fit the model 
+
+```{r ConAppModelFit}
+ConAppModel <- lmerTest::lmer(Sadness~1 + rumination*Timepoint + Contagion*Timepoint + Appraisal*Timepoint + (1|ResponseId), 
+                              data = Nov18Long)
+
+sjPlot::tab_model(ConAppModel, 
+                  pred.labels = NULL, 
+                  show.std = TRUE)
+
+ConAppGridAv <- emmeans::emmeans(ConAppModel, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction")
+                                              )))
+                                      
+emmeans::contrast(ConAppGridAv, 
+                  "pairwise", 
+                  by = c("rumination"))
+
+ConAppGridNoCont <- emmeans::emmeans(ConAppModel, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction"), 
+                                              Contagion = "No", 
+                                              Appraisal = "Yes"
+                                              )))
+
+emmeans::contrast(ConAppGridNoCont, 
+                  "pairwise", 
+                  by = c("rumination"))
+
+ConAppGridYesCont <- emmeans::emmeans(ConAppModel, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction"), 
+                                              Contagion = "Yes", 
+                                              Appraisal = "No"
+                                              )))
+
+emmeans::contrast(ConAppGridYesCont, 
+                  "pairwise", 
+                  by = c("rumination"))
+```
+
+
+
+```{r PlotMod}
+
+ContAppAvPlot <- emmeans::emmip(ConAppGridAv, 
+                                   rumination~Timepoint, 
+                                   CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "Averaged over ") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+```
+
+
+## Model Comparison
+
+```{r}
+cbind(
+  AIC(PostInductionTimePoints, AllExplore, ConAppModel),
+  BIC(PostInductionTimePoints, AllExplore, ConAppModel)
+)[,c(1,2,4)] 
 ```
 
