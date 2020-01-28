@@ -1,0 +1,326 @@
+song_artist,word_count,sad_count,pos_count,neg_count,sad_total_ratio,neg_pos_ratio,sad_pos_ratio,bias,ID,valence,energy,artist_rtn,song_rtn
+Hurt_Johnny Cash,608,96,96,160,0,6235149080811617e12,1,Negative,1,0.163,0.392,Johnny Cash,Hurt
+Stay_Rihanna,50,1,1,2,0,2.7183,1,Negative,2,0.125,0.31,Rihanna,Stay
+Kiss from a Rose_Seal,204,22,24,16,0,3e-4,0.1353,Positive,3,0.223,0.532,Seal,Kiss from a Rose
+Lonely_Akon,146,57,6,57,0,14093490824269389e6,14093490824269389e6,Negative,5,0.595,0.533,Akon,Lonely
+I Started A Joke_Bee Gees,46,6,3,12,0,8103.0839,20.0855,Negative,6,0.431,0.464,Bee Gees,I Started A Joke
+Just When I Needed You Most_Randy VanWarmer,45,0,7,0,0,9e-4,9e-4,Positive,7,0.346,0.313,Randy VanWarmer,Just When I Needed You Most
+Hurt_Johnny Cash,608,96,96,160,0,6235149080811617e12,1,Negative,9,0.163,0.392,Johnny Cash,Hurt
+Love Of My Life - Remastered 2011_Queen,1,0,0,0,0.3679,1,1,Equal,10,0.26,0.183,Queen,Love Of My Life - Remastered 2011
+I'll Never Love Again - Film Version_Lady Gaga,1216,80,240,176,0,0,0,Positive,11,0.221,0.34,Lady Gaga,I'll Never Love Again - Film Version
+Wherever You Will Go_The Calling,35,4,6,5,0,0.3679,0.1353,Positive,12,0.371,0.719,The Calling,Wherever You Will Go
+Hello_Adele,900,18,36,18,0,0,0,Positive,14,0.289,0.451,Adele,Hello
+Yesterday - Remastered 2009_The Beatles,1,0,0,0,0.3679,1,1,Equal,15,0.315,0.179,The Beatles,Yesterday - Remastered 2009
+Fix You_Coldplay,423,27,81,45,0,0,0,Positive,17,0.123,0.418,Coldplay,Fix You
+Driving Home for Christmas_Chris Rea,82,3,7,1,0,0.0025,0.0183,Positive,18,0.894,0.661,Chris Rea,Driving Home for Christmas
+To Build A Home_The Cinematic Orchestra,864,48,80,112,0,78962960182680.7,0,Negative,19,0.0774,0.128,The Cinematic Orchestra,To Build A Home
+See You Again (feat. Charlie Puth)_Wiz Khalifa,4,0,0,0,0.0183,1,1,Equal,20,0.283,0.481,Wiz Khalifa,See You Again (feat. Charlie Puth)
+If I Die Young_The Band Perry,123,8,23,13,0,0,0,Positive,21,0.362,0.497,The Band Perry,If I Die Young
+I'm Sorry_Joyner Lucas,283,37,33,51,0,65659969.1373,54.5982,Negative,22,0.337,0.576,Joyner Lucas,I'm Sorry
+Numb_Linkin Park,232,32,4,88,0,30250773222011426e20,1446257064291.475,Negative,24,0.243,0.863,Linkin Park,Numb
+Lego House_Ed Sheeran,69,5,17,11,0,0.0025,0,Positive,25,0.565,0.637,Ed Sheeran,Lego House
+A Quiet Life_Teho Teardo,1,0,0,0,0.3679,1,1,Equal,26,0.0587,0.231,Teho Teardo,A Quiet Life
+See You Again (feat. Charlie Puth)_Wiz Khalifa,4,0,0,0,0.0183,1,1,Equal,27,0.283,0.481,Wiz Khalifa,See You Again (feat. Charlie Puth)
+Sad Song (feat. Elena Coats)_We The Kings,1,0,0,0,0.3679,1,1,Equal,28,0.249,0.526,We The Kings,Sad Song (feat. Elena Coats)
+Let Me Love You_Mario,124,6,37,8,0,0,0,Positive,29,0.556,0.578,Mario,Let Me Love You
+Only Time_Enya,40,0,5,0,0,0.0067,0.0067,Positive,30,0.213,0.249,Enya,Only Time
+See You Again (feat. Charlie Puth)_Wiz Khalifa,4,0,0,0,0.0183,1,1,Equal,31,0.283,0.481,Wiz Khalifa,See You Again (feat. Charlie Puth)
+Supermarket Flowers_Ed Sheeran,3240,216,540,324,0,0,0,Positive,32,0.257,0.242,Ed Sheeran,Supermarket Flowers
+It Ain't Me_Selena Gomez,1,0,0,0,0.3679,1,1,Equal,33,0.539,0.658,Selena Gomez,It Ain't Me
+Fields Of Gold_Sting,87,3,22,8,0,0,0,Positive,34,0.32,0.339,Sting,Fields Of Gold
+With Or Without You - Remastered_U2,1,0,0,0,0.3679,1,1,Equal,35,0.113,0.429,U2,With Or Without You - Remastered
+Hood_Perfume Genius,22,1,7,5,0,0.1353,0.0025,Positive,36,0.272,0.278,Perfume Genius,Hood
+Stop Crying Your Heart Out_Oasis,896,192,64,192,0,38877084059945954e39,38877084059945954e39,Negative,37,0.083,0.566,Oasis,Stop Crying Your Heart Out
+Please Don't Go_Joel Adams,57,1,5,3,0,0.1353,0.0183,Positive,38,0.235,0.768,Joel Adams,Please Don't Go
+Be Alright_Dean Lewis,95,7,12,12,0,1,0.0067,Equal,39,0.443,0.586,Dean Lewis,Be Alright
+Thursday_Jess Glynne,135,14,25,20,0,0.0067,0,Positive,40,0.354,0.554,Jess Glynne,Thursday
+My Girl_The Temptations,73,2,7,6,0,0.3679,0.0067,Positive,42,0.694,0.418,The Temptations,My Girl
+The Other_Lauv,76,3,2,9,0,1096.6332,2.7183,Negative,43,0.384,0.553,Lauv,The Other
+Supermarket Flowers_Ed Sheeran,3240,216,540,324,0,0,0,Positive,44,0.257,0.242,Ed Sheeran,Supermarket Flowers
+You_The Pretty Reckless,13,1,3,1,0,0.1353,0.1353,Positive,45,0.261,0.543,The Pretty Reckless,You
+SAD!_XXXTENTACION,765,117,27,180,0,27993405242674968e50,12204032943178407e23,Negative,47,0.473,0.613,XXXTENTACION,SAD!
+Mad World (Feat. Michael Andrews)_Gary Jules,6,0,0,0,0.0025,1,1,Equal,48,0.304,0.0581,Gary Jules,Mad World (Feat. Michael Andrews)
+Hope There's Someone_Antony and the Johnsons,52,5,7,7,0,1,0.1353,Equal,51,0.101,0.168,Antony and the Johnsons,Hope There's Someone
+Trapped In My Mind_Kid Cudi,93,21,15,25,0,22026.4658,403.4288,Negative,52,0.787,0.697,Kid Cudi,Trapped In My Mind
+Washer_Slint,45,4,9,9,0,1,0.0067,Equal,53,0.0384,0.0954,Slint,Washer
+Run_Snow Patrol,224,8,32,16,0,0,0,Positive,54,0.197,0.64,Snow Patrol,Run
+Bored_Billie Eilish,82,3,18,16,0,0.1353,0,Positive,55,0.112,0.318,Billie Eilish,Bored
+Edit Your Hometown_La Dispute,96,10,9,18,0,8103.0839,2.7183,Negative,56,0.69,0.96,La Dispute,Edit Your Hometown
+Supermarket Flowers_Ed Sheeran,3240,216,540,324,0,0,0,Positive,57,0.257,0.242,Ed Sheeran,Supermarket Flowers
+How to Save a Life_The Fray,1600,224,416,384,0,0,0,Positive,58,0.361,0.743,The Fray,How to Save a Life
+Apologize_OneRepublic,212,104,36,80,0,12851600114359308e3,3404276049931741e14,Negative,59,0.502,0.74,OneRepublic,Apologize
+Redemption Blues_Miracle Of Sound,95,19,14,30,0,8886110.5205,148.4132,Negative,60,0.153,0.668,Miracle Of Sound,Redemption Blues
+Goodbye_2NE1,163,0,0,0,0,1,1,Equal,61,0.492,0.488,2NE1,Goodbye
+Coat of Many Colors_Dolly Parton,88,1,13,9,0,0.0183,0,Positive,62,0.681,0.257,Dolly Parton,Coat of Many Colors
+Numb_Linkin Park,232,32,4,88,0,30250773222011426e20,1446257064291.475,Negative,64,0.243,0.863,Linkin Park,Numb
+Star Shopping_Lil Peep,77,0,18,2,0,0,0,Positive,65,0.323,0.471,Lil Peep,Star Shopping
+Yes I'm Changing_Tame Impala,68,4,4,6,0,7.3891,1,Negative,66,0.354,0.609,Tame Impala,Yes I'm Changing
+Lay It On Me_Vance Joy,55,0,6,3,0,0.0498,0.0025,Positive,67,0.53,0.663,Vance Joy,Lay It On Me
+Passing Afternoon_Iron & Wine,88,4,9,8,0,0.3679,0.0067,Positive,68,0.616,0.311,Iron & Wine,Passing Afternoon
+Bring Him Home_Les Misérables-Original London Cast,1,0,0,0,0.3679,1,1,Equal,70,0.0754,0.301,Les Misérables-Original London Cast,Bring Him Home
+Holocene_Bon Iver,72,1,9,5,0,0.0183,3e-4,Positive,72,0.147,0.304,Bon Iver,Holocene
+The Axis_Thee Oh Sees,14,1,3,2,0,0.3679,0.1353,Positive,74,0.248,0.55,Thee Oh Sees,The Axis
+See You Again (feat. Charlie Puth)_Wiz Khalifa,4,0,0,0,0.0183,1,1,Equal,75,0.283,0.481,Wiz Khalifa,See You Again (feat. Charlie Puth)
+No One_Alicia Keys,44,3,1,3,0,7.3891,7.3891,Negative,77,0.166,0.548,Alicia Keys,No One
+Dying in LA_Panic! At The Disco,67,10,3,11,0,2980.958,1096.6332,Negative,78,0.315,0.35,Panic! At The Disco,Dying in LA
+The Last Night_Skillet,47,6,2,7,0,148.4132,54.5982,Negative,79,0.542,0.856,Skillet,The Last Night
+BABY_The Rose,1,0,0,0,0.3679,1,1,Equal,81,0.516,0.804,The Rose,BABY
+SAD!_XXXTENTACION,765,117,27,180,0,27993405242674968e50,12204032943178407e23,Negative,82,0.473,0.613,XXXTENTACION,SAD!
+Chasing Cars_Snow Patrol,172,16,16,48,0,78962960182680.7,1,Negative,83,0.136,0.592,Snow Patrol,Chasing Cars
+Wicked Game_Chris Isaak,95,8,9,14,0,148.4132,0.3679,Negative,84,0.29,0.548,Chris Isaak,Wicked Game
+The Edges_Catherine McGrath,92,7,13,9,0,0.0183,0.0025,Positive,85,0.445,0.846,Catherine McGrath,The Edges
+Chanel_Frank Ocean,195,6,25,22,0,0.0498,0,Positive,86,0.473,0.503,Frank Ocean,Chanel
+The Scientist_Coldplay,567,27,27,27,0,1,1,Equal,87,0.212,0.442,Coldplay,The Scientist
+"My Heart Will Go On - Love Theme from ""Titanic""_Céline Dion",2,0,0,0,0.1353,1,1,Equal,88,0.0382,0.276,Céline Dion,"My Heart Will Go On - Love Theme from ""Titanic"""
+Happier_Ed Sheeran,64,5,13,5,0,3e-4,3e-4,Positive,89,0.236,0.385,Ed Sheeran,Happier
+The Nights_Avicii,128,6,4,13,0,8103.0839,7.3891,Negative,90,0.654,0.835,Avicii,The Nights
+Rock 'N' Roll Suicide - 2012 Remaster_David Bowie,1,0,0,0,0.3679,1,1,Equal,91,0.272,0.308,David Bowie,Rock 'N' Roll Suicide - 2012 Remaster
+Suddenly I See_KT Tunstall,137,11,12,12,0,1,0.3679,Equal,92,0.664,0.767,KT Tunstall,Suddenly I See
+Wake Me up When September Ends_Green Day,57,6,3,6,0,20.0855,20.0855,Negative,93,0.146,0.814,Green Day,Wake Me up When September Ends
+To Build A Home_The Cinematic Orchestra,864,48,80,112,0,78962960182680.7,0,Negative,94,0.0774,0.128,The Cinematic Orchestra,To Build A Home
+Somewhere over the Rainbow_Judy Garland,33,3,4,1,0,0.0498,0.3679,Positive,96,0.106,0.224,Judy Garland,Somewhere over the Rainbow
+Time To Say Goodbye (Con Te Partirò)_Andrea Bocelli,1,0,0,0,0.3679,1,1,Equal,97,0.445,0.435,Andrea Bocelli,Time To Say Goodbye (Con Te Partirò)
+The Scientist_Coldplay,567,27,27,27,0,1,1,Equal,99,0.212,0.442,Coldplay,The Scientist
+Six Years_Old Gray,52,1,6,1,0,0.0067,0.0067,Positive,100,0.0874,0.74,Old Gray,Six Years
+White Ferrari_Frank Ocean,92,3,12,4,0,3e-4,1e-4,Positive,101,0.219,0.0924,Frank Ocean,White Ferrari
+Love My Way_The Psychedelic Furs,50,3,10,4,0,0.0025,9e-4,Positive,102,0.52,0.85,The Psychedelic Furs,Love My Way
+Monday Nites( I Always Stay Up Late On )_The JBJ Band,1,0,0,0,0.3679,1,1,Equal,103,0.787,0.951,The JBJ Band,Monday Nites( I Always Stay Up Late On )
+Beauty and the Beast_Bugzy Malone,209,18,16,27,0,59874.1417,7.3891,Negative,104,0.384,0.734,Bugzy Malone,Beauty and the Beast
+Starman - 2012 Remaster_David Bowie,1,0,0,0,0.3679,1,1,Equal,105,0.55,0.45,David Bowie,Starman - 2012 Remaster
+Where's My Love - Piano Solo_SYML,2,0,0,0,0.1353,1,1,Equal,107,0.135,0.0511,SYML,Where's My Love - Piano Solo
+Make You Feel My Love_Adele,51,4,10,7,0,0.0498,0.0025,Positive,108,0.0896,0.18,Adele,Make You Feel My Love
+This Woman's Work_Kate Bush,48,2,10,2,0,3e-4,3e-4,Positive,112,0.169,0.113,Kate Bush,This Woman's Work
+What Would You Do_Bastille,138,10,17,22,0,148.4132,9e-4,Negative,113,0.36,0.732,Bastille,What Would You Do
+If It Means a Lot to You_A Day To Remember,139,0,12,8,0,0.0183,0,Positive,117,0.44,0.536,A Day To Remember,If It Means a Lot to You
+Staring Through My Rear View (feat. Dwele)_2Pac,1,0,0,0,0.3679,1,1,Equal,118,0.78,0.86,2Pac,Staring Through My Rear View (feat. Dwele)
+Hello_Adele,900,18,36,18,0,0,0,Positive,119,0.289,0.451,Adele,Hello
+Otherside (feat. Fences) [Ryan Lewis Remix]_Macklemore & Ryan Lewis,1,0,0,0,0.3679,1,1,Equal,120,0.23,0.568,Macklemore & Ryan Lewis,Otherside (feat. Fences) [Ryan Lewis Remix]
+Tintin in Tibet_Mount Eerie,140,11,20,10,0,0,1e-4,Positive,121,0.173,0.27,Mount Eerie,Tintin in Tibet
+These Are The Days Of Our Lives - 2011 Remaster_Queen,2,0,0,0,0.1353,1,1,Equal,122,0.55,0.402,Queen,These Are The Days Of Our Lives - 2011 Remaster
+Things_Louis Cole,33,8,6,10,0,54.5982,7.3891,Negative,123,0.263,0.479,Louis Cole,Things
+If Only_Andrea Bocelli,66,0,9,0,0,1e-4,1e-4,Positive,125,0.0757,0.207,Andrea Bocelli,If Only
+Lost Without You_Freya Ridings,1200,300,150,300,0,13937095806663797e49,13937095806663797e49,Negative,127,0.0976,0.136,Freya Ridings,Lost Without You
+The Scientist_Coldplay,567,27,27,27,0,1,1,Equal,128,0.212,0.442,Coldplay,The Scientist
+I'll Never Love Again - Film Version_Lady Gaga,1216,80,240,176,0,0,0,Positive,129,0.221,0.34,Lady Gaga,I'll Never Love Again - Film Version
+I'll Never Love Again - Film Version - Radio Edit_Bradley Cooper,1,0,0,0,0.3679,1,1,Equal,129,0.221,0.34,Bradley Cooper,I'll Never Love Again - Film Version - Radio Edit
+Fix You_Coldplay,423,27,81,45,0,0,0,Positive,130,0.123,0.418,Coldplay,Fix You
+Don't Look Back In Anger - Remastered_Oasis,2,0,0,0,0.1353,1,1,Equal,131,0.335,0.922,Oasis,Don't Look Back In Anger - Remastered
+What I've Done_Linkin Park,67,5,8,8,0,1,0.0498,Equal,132,0.287,0.93,Linkin Park,What I've Done
+Iris_The Goo Goo Dolls,2,0,0,0,0.1353,1,1,Equal,133,0.497,0.715,The Goo Goo Dolls,Iris
+We Don't Have To Take Our Clothes Off_Ella Eyre,88,1,25,2,0,0,0,Positive,134,0.332,0.231,Ella Eyre,We Don't Have To Take Our Clothes Off
+Goodbye My Lover_James Blunt,404,44,88,68,0,0,0,Positive,135,0.273,0.261,James Blunt,Goodbye My Lover
+Peak - Stripped_Anne-Marie,52,11,14,12,0,0.1353,0.0498,Positive,136,0.228,0.199,Anne-Marie,Peak - Stripped
+The Unforgiven_Metallica,87,4,3,9,0,403.4288,2.7183,Negative,137,0.251,0.597,Metallica,The Unforgiven
+Goodbye My Lover_James Blunt,404,44,88,68,0,0,0,Positive,138,0.273,0.261,James Blunt,Goodbye My Lover
+All of Me_John Legend,77,9,10,12,0,7.3891,0.3679,Negative,139,0.331,0.264,John Legend,All of Me
+Broken_Lund,105,14,9,20,0,59874.1417,148.4132,Negative,140,0.145,0.581,Lund,Broken
+Let It Go_James Bay,64,9,0,12,0,162754.7914,8103.0839,Negative,141,0.246,0.311,James Bay,Let It Go
+Falling Away with You_Muse,71,11,8,16,0,2980.958,20.0855,Negative,142,0.272,0.683,Muse,Falling Away with You
+SAD!_XXXTENTACION,765,117,27,180,0,27993405242674968e50,12204032943178407e23,Negative,143,0.473,0.613,XXXTENTACION,SAD!
+Zombie_The Cranberries,80,3,1,5,0,54.5982,7.3891,Negative,144,0.305,0.635,The Cranberries,Zombie
+Fallen Angel_Three Days Grace,77,19,17,16,0,0.3679,7.3891,Positive,146,0.218,0.911,Three Days Grace,Fallen Angel
+Need You Now_Lady Antebellum,52,7,2,8,0,403.4288,148.4132,Negative,147,0.231,0.622,Lady Antebellum,Need You Now
+"My Love, My Life_ABBA",68,3,21,5,0,0,0,Positive,148,0.226,0.426,ABBA,"My Love, My Life"
+Until Forever_SS501,1,0,0,0,0.3679,1,1,Equal,149,0.267,0.702,SS501,Until Forever
+Mad World (Feat. Michael Andrews)_Gary Jules,6,0,0,0,0.0025,1,1,Equal,150,0.304,0.0581,Gary Jules,Mad World (Feat. Michael Andrews)
+Dancing With Tears In My Eyes_Kesha,92,29,6,38,0,78962960182680.7,9744803446.2489,Negative,151,0.674,0.917,Kesha,Dancing With Tears In My Eyes
+Life on Mars? - 2015 Remaster_David Bowie,1,0,0,0,0.3679,1,1,Equal,152,0.216,0.384,David Bowie,Life on Mars? - 2015 Remaster
+A Bad Dream_Keane,55,5,4,18,0,1202604.2842,2.7183,Negative,153,0.279,0.729,Keane,A Bad Dream
+Me & You Together Song_The 1975,91,2,21,4,0,0,0,Positive,154,0.38,0.77,The 1975,Me & You Together Song
+when the party's over_Billie Eilish,35,11,5,8,0,20.0855,403.4288,Negative,155,0.198,0.111,Billie Eilish,when the party's over
+Do You Feel It?_Chaos Chaos,79,14,10,18,0,2980.958,54.5982,Negative,156,0.383,0.66,Chaos Chaos,Do You Feel It?
+Dancing in the Sky_Dani and Lizzy,73,7,23,3,0,0,0,Positive,157,0.126,0.31,Dani and Lizzy,Dancing in the Sky
+How To Disappear Completely_Radiohead,16,0,0,0,0,1,1,Equal,158,0.205,0.302,Radiohead,How To Disappear Completely
+You Raise Me Up_Westlife,61,1,0,8,0,2980.958,2.7183,Negative,160,0.172,0.358,Westlife,You Raise Me Up
+Nobody's Home_Avril Lavigne,66,13,2,17,0,3269017.3725,59874.1417,Negative,161,0.177,0.907,Avril Lavigne,Nobody's Home
+Everybody Hurts_R.E.M.,1,0,0,0,0.3679,1,1,Equal,162,0.166,0.324,R.E.M.,Everybody Hurts
+Another Love_Tom Odell,87,8,28,10,0,0,0,Positive,163,0.131,0.537,Tom Odell,Another Love
+Low Roar_Low Roar,14,0,0,0,0,1,1,Equal,164,0.0381,0.15,Low Roar,Low Roar
+The Worst_Jhené Aiko,78,3,15,9,0,0.0025,0,Positive,165,0.123,0.414,Jhené Aiko,The Worst
+Iris_The Goo Goo Dolls,2,0,0,0,0.1353,1,1,Equal,166,0.497,0.715,The Goo Goo Dolls,Iris
+All By Myself_Eric Carmen,33,1,6,2,0,0.0183,0.0067,Positive,167,0.111,0.373,Eric Carmen,All By Myself
+Photographs (with Rag'n'Bone Man)_Professor Green,1,0,0,0,0.3679,1,1,Equal,168,0.478,0.76,Professor Green,Photographs (with Rag'n'Bone Man)
+All Too Well_Taylor Swift,117,7,7,12,0,148.4132,1,Negative,169,0.337,0.609,Taylor Swift,All Too Well
+Albinoni: Adagio in G Minor (Excerpt)_Tomaso Albinoni,1,0,0,0,0.3679,1,1,Equal,170,0.0376,0.0971,Tomaso Albinoni,Albinoni: Adagio in G Minor (Excerpt)
+Give Me Love_Ed Sheeran,130,0,57,2,0,0,0,Positive,171,0.11,0.328,Ed Sheeran,Give Me Love
+The Book Of Love - Single Version_Gavin James,1,0,0,0,0.3679,1,1,Equal,172,0.224,0.308,Gavin James,The Book Of Love - Single Version
+Sail Away_David Gray,62,3,11,6,0,0.0067,3e-4,Positive,173,0.188,0.568,David Gray,Sail Away
+Apologize_OneRepublic,212,104,36,80,0,12851600114359308e3,3404276049931741e14,Negative,174,0.502,0.74,OneRepublic,Apologize
+What A Wonderful World_Eva Cassidy,48,1,16,3,0,0,0,Positive,175,0.0941,0.128,Eva Cassidy,What A Wonderful World
+Dance With My Father - Radio Version_Luther Vandross,1,0,0,0,0.3679,1,1,Equal,176,0.231,0.341,Luther Vandross,Dance With My Father - Radio Version
+Everyday Is Like Sunday - 2011 Remaster_Morrissey,1,0,0,0,0.3679,1,1,Equal,177,0.56,0.869,Morrissey,Everyday Is Like Sunday - 2011 Remaster
+When I'm Gone_Eminem,306,22,43,33,0,0,0,Positive,178,0.757,0.746,Eminem,When I'm Gone
+Run_Snow Patrol,224,8,32,16,0,0,0,Positive,179,0.197,0.64,Snow Patrol,Run
+Lost Without You_Freya Ridings,1200,300,150,300,0,13937095806663797e49,13937095806663797e49,Negative,180,0.0976,0.136,Freya Ridings,Lost Without You
+Chasing Pavements_Adele,48,4,3,10,0,1096.6332,2.7183,Negative,181,0.325,0.473,Adele,Chasing Pavements
+"Any Other Name (From ""American Beauty"")_Thomas Newman",1,0,0,0,0.3679,1,1,Equal,182,0.0378,0.0137,Thomas Newman,"Any Other Name (From ""American Beauty"")"
+She Will Be Loved - Radio Mix_Maroon 5,684,20,40,24,0,0,0,Positive,183,0.465,0.663,Maroon 5,She Will Be Loved - Radio Mix
+Fast Car_Tracy Chapman,141,13,20,15,0,0.0067,9e-4,Positive,184,0.194,0.292,Tracy Chapman,Fast Car
+Supermarket Flowers_Ed Sheeran,3240,216,540,324,0,0,0,Positive,185,0.257,0.242,Ed Sheeran,Supermarket Flowers
+Should I Stay or Should I Go - Remastered_The Clash,1,0,0,0,0.3679,1,1,Equal,186,0.816,0.833,The Clash,Should I Stay or Should I Go - Remastered
+Can't Help Falling in Love_Elvis Presley,31,6,10,6,0,0.0183,0.0183,Positive,187,0.343,0.293,Elvis Presley,Can't Help Falling in Love
+Breathe Me_Sia,136,16,16,36,0,485165195.4098,1,Negative,188,0.19,0.621,Sia,Breathe Me
+Gypsy_Fleetwood Mac,48,1,10,11,0,2.7183,1e-4,Negative,189,0.847,0.54,Fleetwood Mac,Gypsy
+Disorder_Goldfinger,69,9,2,10,0,2980.958,1096.6332,Negative,190,0.686,0.965,Goldfinger,Disorder
+Headlights_Eminem,272,28,27,38,0,59874.1417,2.7183,Negative,191,0.453,0.782,Eminem,Headlights
+Angels_Robbie Williams,300,24,80,48,0,0,0,Positive,192,0.252,0.586,Robbie Williams,Angels
+Sun in an Empty Room_The Weakerthans,68,4,4,7,0,20.0855,1,Negative,194,0.521,0.613,The Weakerthans,Sun in an Empty Room
+Try Sleeping with a Broken Heart_Alicia Keys,81,6,8,8,0,1,0.1353,Equal,195,0.549,0.82,Alicia Keys,Try Sleeping with a Broken Heart
+Lost Without You_Freya Ridings,1200,300,150,300,0,13937095806663797e49,13937095806663797e49,Negative,197,0.0976,0.136,Freya Ridings,Lost Without You
+Albatross - 2018 Remaster_Fleetwood Mac,1,0,0,0,0.3679,1,1,Equal,198,0.264,0.0631,Fleetwood Mac,Albatross - 2018 Remaster
+Somewhere Only We Know_Keane,37,0,5,3,0,0.1353,0.0067,Positive,201,0.368,0.655,Keane,Somewhere Only We Know
+A Little Piece of Heaven_Avenged Sevenfold,199,26,33,39,0,403.4288,9e-4,Negative,203,0.667,0.881,Avenged Sevenfold,A Little Piece of Heaven
+Misery_The Gaslight Anthem,80,14,24,18,0,0.0025,0,Positive,205,0.268,0.367,The Gaslight Anthem,Misery
+Chasing Cars_Snow Patrol,172,16,16,48,0,78962960182680.7,1,Negative,206,0.136,0.592,Snow Patrol,Chasing Cars
+Supermarket Flowers_Ed Sheeran,3240,216,540,324,0,0,0,Positive,207,0.257,0.242,Ed Sheeran,Supermarket Flowers
+Set The Fire To The Third Bar_Snow Patrol,76,4,10,7,0,0.0498,0.0025,Positive,208,0.385,0.379,Snow Patrol,Set The Fire To The Third Bar
+How to Save a Life_The Fray,1600,224,416,384,0,0,0,Positive,209,0.361,0.743,The Fray,How to Save a Life
+You Are Not Alone_Michael Jackson,212,44,8,24,0,8886110.5205,4311231547115195,Negative,210,0.256,0.402,Michael Jackson,You Are Not Alone
+Cinderella_Steven Curtis Chapman,76,1,15,4,0,0,0,Positive,211,0.305,0.447,Steven Curtis Chapman,Cinderella
+Mad World (Feat. Michael Andrews)_Gary Jules,6,0,0,0,0.0025,1,1,Equal,212,0.304,0.0581,Gary Jules,Mad World (Feat. Michael Andrews)
+Stop Crying Your Heart Out_Oasis,896,192,64,192,0,38877084059945954e39,38877084059945954e39,Negative,213,0.083,0.566,Oasis,Stop Crying Your Heart Out
+The Long And Winding Road - Remastered 2009_The Beatles,1,0,0,0,0.3679,1,1,Equal,215,0.392,0.329,The Beatles,The Long And Winding Road - Remastered 2009
+If I Die Young_Julia Sheer,119,7,23,13,0,0,0,Positive,217,0.456,0.205,Julia Sheer,If I Die Young
+When You Love Someone_James TW,70,7,16,7,0,1e-4,1e-4,Positive,218,0.348,0.453,James TW,When You Love Someone
+forever rain_RM,268,0,3,0,0,0.0498,0.0498,Positive,219,0.252,0.591,RM,forever rain
+By The Grace Of God_Katy Perry,102,5,22,6,0,0,0,Positive,220,0.217,0.367,Katy Perry,By The Grace Of God
+When We Were Young_Adele,264,4,24,8,0,0,0,Positive,221,0.273,0.594,Adele,When We Were Young
+Blue on Blue_Bobby Vinton,68,46,1,21,0,485165195.4098,34934271057485095e3,Negative,222,0.555,0.303,Bobby Vinton,Blue on Blue
+Slide Away - Remastered_Oasis,1,0,0,0,0.3679,1,1,Equal,223,0.29,0.928,Oasis,Slide Away - Remastered
+There's A Reason Why (I Never Returned Your Calls)_Blossoms,59,5,9,15,0,403.4288,0.0183,Negative,224,0.685,0.882,Blossoms,There's A Reason Why (I Never Returned Your Calls)
+I Forget Where We Were_Ben Howard,76,1,20,13,0,9e-4,0,Positive,225,0.181,0.462,Ben Howard,I Forget Where We Were
+Gnossienne No. 1 (Lent)_Erik Satie,1,0,0,0,0.3679,1,1,Equal,226,0.164,0.00631,Erik Satie,Gnossienne No. 1 (Lent)
+Songbird - 2004 Remaster_Fleetwood Mac,1,0,0,0,0.3679,1,1,Equal,227,0.364,0.0851,Fleetwood Mac,Songbird - 2004 Remaster
+Skinny Love_Birdy,232,24,44,40,0,0.0183,0,Positive,228,0.169,0.29,Birdy,Skinny Love
+Live Forever - Remastered_Oasis,1,0,0,0,0.3679,1,1,Equal,229,0.179,0.794,Oasis,Live Forever - Remastered
+Street Spirit (Fade Out)_Radiohead,43,2,6,10,0,54.5982,0.0183,Negative,231,0.129,0.453,Radiohead,Street Spirit (Fade Out)
+Hallelujah_Jeff Buckley,105,6,16,9,0,9e-4,0,Positive,232,0.0828,0.136,Jeff Buckley,Hallelujah
+Fight Song_Rachel Platten,119,2,5,17,0,162754.7914,0.0498,Negative,233,0.33,0.714,Rachel Platten,Fight Song
+Ain't Nothing Changed_Loyle Carner,175,10,14,19,0,148.4132,0.0183,Negative,234,0.149,0.663,Loyle Carner,Ain't Nothing Changed
+The One That Got Away_Katy Perry,68,5,6,4,0,0.1353,0.3679,Positive,236,0.864,0.792,Katy Perry,The One That Got Away
+Mad World (Feat. Michael Andrews)_Gary Jules,6,0,0,0,0.0025,1,1,Equal,237,0.304,0.0581,Gary Jules,Mad World (Feat. Michael Andrews)
+Jesus Christ_Brand New,71,7,8,8,0,1,0.3679,Equal,238,0.263,0.733,Brand New,Jesus Christ
+"When the Night Is Long (From ""Final Space"")_Final Space",1,0,0,0,0.3679,1,1,Equal,239,0.208,0.0927,Final Space,"When the Night Is Long (From ""Final Space"")"
+9 Crimes_Damien Rice,58,2,0,24,0,26489122129.8435,7.3891,Negative,240,0.0995,0.167,Damien Rice,9 Crimes
+"You'll Be In My Heart - From ""Tarzan""/Soundtrack Version_Phil Collins",2,0,0,0,0.1353,1,1,Equal,241,0.655,0.744,Phil Collins,"You'll Be In My Heart - From ""Tarzan""/Soundtrack Version"
+Sleepover_Hayley Kiyoko,83,6,9,8,0,0.3679,0.0498,Positive,242,0.547,0.81,Hayley Kiyoko,Sleepover
+Bye Bye_Mariah Carey,192,12,16,11,0,0.0067,0.0183,Positive,243,0.84,0.585,Mariah Carey,Bye Bye
+Good Riddance (Time of Your Life)_Green Day,43,0,8,4,0,0.0183,3e-4,Positive,244,0.648,0.432,Green Day,Good Riddance (Time of Your Life)
+You Are Not Alone_Michael Jackson,212,44,8,24,0,8886110.5205,4311231547115195,Negative,246,0.256,0.402,Michael Jackson,You Are Not Alone
+Jonathan David_Belle & Sebastian,52,2,13,6,0,9e-4,0,Positive,247,0.868,0.774,Belle & Sebastian,Jonathan David
+Viva La Vida_Coldplay,119,6,19,9,0,0,0,Positive,248,0.416,0.619,Coldplay,Viva La Vida
+All By Myself_Céline Dion,37,1,5,2,0,0.0498,0.0183,Positive,249,0.0773,0.325,Céline Dion,All By Myself
+To Build A Home_The Cinematic Orchestra,864,48,80,112,0,78962960182680.7,0,Negative,250,0.0774,0.128,The Cinematic Orchestra,To Build A Home
+End Of The Road_Boyz II Men,141,12,31,21,0,0,0,Positive,251,0.529,0.427,Boyz II Men,End Of The Road
+The Christmas Shoes_Newsong,126,4,20,8,0,0,0,Positive,252,0.281,0.386,Newsong,The Christmas Shoes
+Strawberry Swing_Coldplay,70,4,8,10,0,7.3891,0.0183,Negative,253,0.429,0.663,Coldplay,Strawberry Swing
+Asleep - 2011 Remaster_The Smiths,1,0,0,0,0.3679,1,1,Equal,254,0.215,0.255,The Smiths,Asleep - 2011 Remaster
+Lucid Dreams_Juice WRLD,131,14,14,27,0,442413.392,1,Negative,255,0.218,0.566,Juice WRLD,Lucid Dreams
+Hurt_Johnny Cash,608,96,96,160,0,6235149080811617e12,1,Negative,256,0.163,0.392,Johnny Cash,Hurt
+Wish You Were Here_Pink Floyd,48,6,9,11,0,7.3891,0.0498,Negative,257,0.375,0.262,Pink Floyd,Wish You Were Here
+How to Save a Life_The Fray,1600,224,416,384,0,0,0,Positive,258,0.361,0.743,The Fray,How to Save a Life
+Stop Crying Your Heart Out_Oasis,896,192,64,192,0,38877084059945954e39,38877084059945954e39,Negative,259,0.083,0.566,Oasis,Stop Crying Your Heart Out
+Ashes to Ashes - 2017 Remaster_David Bowie,1,0,0,0,0.3679,1,1,Equal,260,0.866,0.743,David Bowie,Ashes to Ashes - 2017 Remaster
+Human_The Killers,77,3,10,7,0,0.0498,9e-4,Positive,261,0.582,0.8,The Killers,Human
+I'll Never Love Again - Film Version_Lady Gaga,1216,80,240,176,0,0,0,Positive,262,0.221,0.34,Lady Gaga,I'll Never Love Again - Film Version
+I'll See You Again_Westlife,66,20,5,23,0,65659969.1373,3269017.3725,Negative,265,0.0674,0.348,Westlife,I'll See You Again
+Fix You_Coldplay,423,27,81,45,0,0,0,Positive,266,0.123,0.418,Coldplay,Fix You
+"John Wayne Gacy, Jr._Sufjan Stevens",63,5,7,5,0,0.1353,0.1353,Positive,268,0.183,0.179,Sufjan Stevens,"John Wayne Gacy, Jr."
+Breathe Me_Sia,136,16,16,36,0,485165195.4098,1,Negative,269,0.19,0.621,Sia,Breathe Me
+True Love Waits_Radiohead,32,10,6,11,0,148.4132,54.5982,Negative,270,0.0379,0.132,Radiohead,True Love Waits
+Somewhere Only We Know_Lily Allen,30,0,5,2,0,0.0498,0.0067,Positive,271,0.278,0.286,Lily Allen,Somewhere Only We Know
+Somewhere Over The Rainbow_What A Wonderful World_Israel Kamakawiwo'ole,316,16,64,16,0,0,0,Positive,273,0.678,0.168,Israel Kamakawiwo'ole,Somewhere Over The Rainbow_What A Wonderful World
+"Read All About It, Pt. III_Emeli Sandé",134,12,18,23,0,148.4132,0.0025,Negative,274,0.337,0.44,Emeli Sandé,"Read All About It, Pt. III"
+Crosses_José González,1,0,0,0,0.3679,1,1,Equal,275,0.317,0.372,José González,Crosses
+Floating in the Forth_Frightened Rabbit,69,5,8,8,0,1,0.0498,Equal,276,0.178,0.665,Frightened Rabbit,Floating in the Forth
+Dancing On My Own_Calum Scott,272,16,64,12,0,0,0,Positive,278,0.236,0.173,Calum Scott,Dancing On My Own
+Bruises_Lewis Capaldi,96,11,16,18,0,7.3891,0.0067,Negative,279,0.361,0.308,Lewis Capaldi,Bruises
+My Immortal_Amy Lee,1,0,0,0,0.3679,1,1,Equal,280,0.0783,0.282,Amy Lee,My Immortal
+A Change Of Heart_The 1975,87,7,8,15,0,1096.6332,0.3679,Negative,281,0.528,0.51,The 1975,A Change Of Heart
+"You'll Be In My Heart - From ""Tarzan""/Soundtrack Version_Phil Collins",2,0,0,0,0.1353,1,1,Equal,282,0.655,0.744,Phil Collins,"You'll Be In My Heart - From ""Tarzan""/Soundtrack Version"
+Into Dust_Mazzy Star,32,3,2,13,0,59874.1417,2.7183,Negative,283,0.122,0.132,Mazzy Star,Into Dust
+Concrete Angel_Martina McBride,89,5,9,10,0,2.7183,0.0183,Negative,284,0.274,0.392,Martina McBride,Concrete Angel
+Lost Without You_Freya Ridings,1200,300,150,300,0,13937095806663797e49,13937095806663797e49,Negative,285,0.0976,0.136,Freya Ridings,Lost Without You
+Angels_Robbie Williams,300,24,80,48,0,0,0,Positive,286,0.252,0.586,Robbie Williams,Angels
+Don't Go Away - Remastered_Oasis,1,0,0,0,0.3679,1,1,Equal,288,0.178,0.831,Oasis,Don't Go Away - Remastered
+Don't Look Back In Anger - Remastered_Oasis,2,0,0,0,0.1353,1,1,Equal,290,0.335,0.922,Oasis,Don't Look Back In Anger - Remastered
+Seigfried_Frank Ocean,136,12,13,7,0,0.0025,0.3679,Positive,291,0.37,0.255,Frank Ocean,Seigfried
+Maybe_Yiruma,1,0,0,0,0.3679,1,1,Equal,293,0.223,0.226,Yiruma,Maybe
+Let Her Go_Passenger,448,76,88,80,0,3e-4,0,Positive,294,0.244,0.545,Passenger,Let Her Go
+All I Want_Kodaline,35,4,3,4,0,2.7183,2.7183,Negative,295,0.162,0.412,Kodaline,All I Want
+Dosed_Red Hot Chili Peppers,59,1,3,1,0,0.1353,0.1353,Positive,296,0.335,0.8,Red Hot Chili Peppers,Dosed
+Back To December_Taylor Swift,115,7,20,8,0,0,0,Positive,297,0.286,0.67,Taylor Swift,Back To December
+I'll Never Love Again - Film Version_Lady Gaga,1216,80,240,176,0,0,0,Positive,298,0.221,0.34,Lady Gaga,I'll Never Love Again - Film Version
+Cancer_My Chemical Romance,39,4,8,3,0,0.0067,0.0183,Positive,300,0.222,0.515,My Chemical Romance,Cancer
+These Are The Days Of Our Lives - 2011 Remaster_Queen,2,0,0,0,0.1353,1,1,Equal,301,0.55,0.402,Queen,These Are The Days Of Our Lives - 2011 Remaster
+The Sound of Silence_Disturbed,94,3,7,13,0,403.4288,0.0183,Negative,303,0.175,0.28,Disturbed,The Sound of Silence
+Bad Day_Daniel Powter,113,28,12,28,0,8886110.5205,8886110.5205,Negative,304,0.52,0.785,Daniel Powter,Bad Day
+No Angel_Birdy,50,16,5,16,0,59874.1417,59874.1417,Negative,305,0.13,0.23,Birdy,No Angel
+Stole_Kelly Rowland,170,5,17,12,0,0.0067,0,Positive,306,0.477,0.718,Kelly Rowland,Stole
+Black_Pearl Jam,162,5,8,6,0,0.1353,0.0498,Positive,307,0.2,0.684,Pearl Jam,Black
+To Build A Home_The Cinematic Orchestra,864,48,80,112,0,78962960182680.7,0,Negative,308,0.0774,0.128,The Cinematic Orchestra,To Build A Home
+I Hadn't Known (I Only Heard)_Herbert,1,0,0,0,0.3679,1,1,Equal,309,0.685,0.696,Herbert,I Hadn't Known (I Only Heard)
+Hold Back The River_James Bay,93,6,1,7,0,403.4288,148.4132,Negative,310,0.506,0.715,James Bay,Hold Back The River
+Been Thru_Ady Suleiman,85,6,20,9,0,0,0,Positive,312,0.736,0.388,Ady Suleiman,Been Thru
+Sad_Maroon 5,73,7,4,18,0,1202604.2842,20.0855,Negative,313,0.331,0.259,Maroon 5,Sad
+Come Away with Me_Norah Jones,26,2,3,1,0,0.1353,0.3679,Positive,315,0.216,0.146,Norah Jones,Come Away with Me
+Resentment_Beyoncé,66,12,5,21,0,8886110.5205,1096.6332,Negative,316,0.48,0.574,Beyoncé,Resentment
+Time_Pink Floyd,81,5,6,12,0,403.4288,0.3679,Negative,317,0.356,0.48,Pink Floyd,Time
+We Won't Move_Arlissa,98,11,9,13,0,54.5982,7.3891,Negative,318,0.157,0.443,Arlissa,We Won't Move
+Smile_Nat King Cole,32,5,12,6,0,0.0025,9e-4,Positive,319,0.263,0.136,Nat King Cole,Smile
+A Sky Full of Stars_Coldplay,50,2,14,1,0,0,0,Positive,321,0.153,0.636,Coldplay,A Sky Full of Stars
+Somewhere I Belong_Linkin Park,103,17,16,22,0,403.4288,2.7183,Negative,323,0.442,0.951,Linkin Park,Somewhere I Belong
+Let Her Go_Passenger,448,76,88,80,0,3e-4,0,Positive,324,0.244,0.545,Passenger,Let Her Go
+Mad World (Feat. Michael Andrews)_Gary Jules,6,0,0,0,0.0025,1,1,Equal,325,0.304,0.0581,Gary Jules,Mad World (Feat. Michael Andrews)
+Do They Know It's Christmas? - 1984 Version_Band Aid,1,0,0,0,0.3679,1,1,Equal,326,0.349,0.642,Band Aid,Do They Know It's Christmas? - 1984 Version
+Adam's Song_blink-182,85,6,4,14,0,22026.4658,7.3891,Negative,327,0.382,0.775,blink-182,Adam's Song
+Tum Hi Ho_Arijit Singh,206,0,0,0,0,1,1,Equal,328,0.317,0.449,Arijit Singh,Tum Hi Ho
+Heaven (featuring Do)_DJ Sammy,1,0,0,0,0.3679,1,1,Equal,329,0.569,0.942,DJ Sammy,Heaven (featuring Do)
+You_Keaton Henson,41,11,6,14,0,2980.958,148.4132,Negative,330,0.139,0.151,Keaton Henson,You
+She's Always a Woman_Billy Joel,60,7,12,11,0,0.3679,0.0067,Positive,331,0.384,0.324,Billy Joel,She's Always a Woman
+Fellow Feeling_Porter Robinson,17,4,4,4,0,1,1,Equal,332,0.114,0.545,Porter Robinson,Fellow Feeling
+The Funeral_Band of Horses,66,9,0,8,0,2980.958,8103.0839,Negative,333,0.127,0.769,Band of Horses,The Funeral
+Lost Without You_Freya Ridings,1200,300,150,300,0,13937095806663797e49,13937095806663797e49,Negative,334,0.0976,0.136,Freya Ridings,Lost Without You
+When We Were Young_Adele,264,4,24,8,0,0,0,Positive,335,0.273,0.594,Adele,When We Were Young
+Somewhere Over The Rainbow_What A Wonderful World_Israel Kamakawiwo'ole,316,16,64,16,0,0,0,Positive,337,0.678,0.168,Israel Kamakawiwo'ole,Somewhere Over The Rainbow_What A Wonderful World
+I'll Be Missing You (feat. 112)_Diddy,1,0,0,0,0.3679,1,1,Equal,338,0.925,0.479,Diddy,I'll Be Missing You (feat. 112)
+Sloop John B - Remastered_The Beach Boys,1,0,0,0,0.3679,1,1,Equal,339,0.903,0.745,The Beach Boys,Sloop John B - Remastered
+Hello_Adele,900,18,36,18,0,0,0,Positive,340,0.289,0.451,Adele,Hello
+"Adagio for Strings, Op. 11_Samuel Barber",1,0,0,0,0.3679,1,1,Equal,341,0.0298,0.0865,Samuel Barber,"Adagio for Strings, Op. 11"
+The Night We Met_Lord Huron,45,4,0,5,0,148.4132,54.5982,Negative,342,0.1,0.366,Lord Huron,The Night We Met
+"My Heart Will Go On - Love Theme from ""Titanic""_Céline Dion",2,0,0,0,0.1353,1,1,Equal,343,0.0382,0.276,Céline Dion,"My Heart Will Go On - Love Theme from ""Titanic"""
+Skinny Love_Birdy,232,24,44,40,0,0.0183,0,Positive,344,0.169,0.29,Birdy,Skinny Love
+Say Something_A Great Big World,22,2,12,4,0,3e-4,0,Positive,345,0.0765,0.147,A Great Big World,Say Something
+Hope_XXXTENTACION,90,12,13,19,0,403.4288,0.3679,Negative,346,0.225,0.457,XXXTENTACION,Hope
+Castle on the Hill_Ed Sheeran,114,3,15,7,0,3e-4,0,Positive,347,0.471,0.834,Ed Sheeran,Castle on the Hill
+I Fall Apart_Post Malone,109,12,9,20,0,59874.1417,20.0855,Negative,349,0.291,0.538,Post Malone,I Fall Apart
+Lionheart_Demi Lovato,92,1,20,10,0,0,0,Positive,350,0.169,0.678,Demi Lovato,Lionheart
+Supermarket Flowers_Ed Sheeran,3240,216,540,324,0,0,0,Positive,351,0.257,0.242,Ed Sheeran,Supermarket Flowers
+Crash Land_Twin Atlantic,39,4,5,7,0,7.3891,0.3679,Negative,352,0.388,0.462,Twin Atlantic,Crash Land
+Let Me In_Make Them Suffer,56,5,10,7,0,0.0498,0.0067,Positive,353,0.0998,0.964,Make Them Suffer,Let Me In
+Angels_Danny Worsnop,44,0,5,0,0,0.0067,0.0067,Positive,354,0.216,0.227,Danny Worsnop,Angels
+How to Save a Life_The Fray,1600,224,416,384,0,0,0,Positive,355,0.361,0.743,The Fray,How to Save a Life
+My Everything_Ariana Grande,47,5,6,8,0,7.3891,0.3679,Negative,356,0.423,0.265,Ariana Grande,My Everything
+Wicked Games_The Weeknd,132,6,32,12,0,0,0,Positive,357,0.326,0.591,The Weeknd,Wicked Games
+Pink Bullets_The Shins,92,4,8,8,0,1,0.0183,Equal,358,0.41,0.335,The Shins,Pink Bullets
+Yellow_Coldplay,48,0,13,0,0,0,0,Positive,359,0.285,0.661,Coldplay,Yellow
+Rich & Sad_Post Malone,152,1,20,7,0,0,0,Positive,360,0.285,0.571,Post Malone,Rich & Sad
+Arose_Eminem,275,18,32,34,0,7.3891,0,Negative,361,0.547,0.906,Eminem,Arose
+Somebody Else_The 1975,85,4,15,7,0,3e-4,0,Positive,362,0.472,0.788,The 1975,Somebody Else
+Malibu_Miley Cyrus,70,3,11,1,0,0,3e-4,Positive,363,0.343,0.781,Miley Cyrus,Malibu
+Remedy_Adele,67,6,15,10,0,0.0067,1e-4,Positive,364,0.251,0.305,Adele,Remedy
+She Will Be Loved - Radio Mix_Maroon 5,684,20,40,24,0,0,0,Positive,365,0.465,0.663,Maroon 5,She Will Be Loved - Radio Mix
+Dancing On My Own_Calum Scott,272,16,64,12,0,0,0,Positive,366,0.236,0.173,Calum Scott,Dancing On My Own
+Textin' My Ex_T-Pain,121,5,18,17,0,0.3679,0,Positive,367,0.109,0.546,T-Pain,Textin' My Ex
+Smother_Daughter,39,7,6,11,0,148.4132,2.7183,Negative,368,0.112,0.139,Daughter,Smother
+Hurt_Johnny Cash,608,96,96,160,0,6235149080811617e12,1,Negative,369,0.163,0.392,Johnny Cash,Hurt
+Stop Crying Your Heart Out_Oasis,896,192,64,192,0,38877084059945954e39,38877084059945954e39,Negative,370,0.083,0.566,Oasis,Stop Crying Your Heart Out
+Married Life_Michael Giacchino,1,0,0,0,0.3679,1,1,Equal,372,0.112,0.0675,Michael Giacchino,Married Life
+Jealous_Labrinth,75,5,15,18,0,20.0855,0,Negative,374,0.0935,0.155,Labrinth,Jealous
+Wings_Birdy,67,3,7,8,0,2.7183,0.0183,Negative,376,0.224,0.707,Birdy,Wings
+Loving Is Easy_Rex Orange County,57,0,13,0,0,0,0,Positive,377,0.537,0.609,Rex Orange County,Loving Is Easy
+Special Needs_Placebo,83,5,3,10,0,1096.6332,7.3891,Negative,378,0.0412,0.571,Placebo,Special Needs
+Small Bump_Ed Sheeran,102,2,5,7,0,7.3891,0.0498,Negative,379,0.446,0.436,Ed Sheeran,Small Bump
+Mad World (Feat. Michael Andrews)_Gary Jules,6,0,0,0,0.0025,1,1,Equal,380,0.304,0.0581,Gary Jules,Mad World (Feat. Michael Andrews)
+Where's My Love - Piano Solo_SYML,2,0,0,0,0.1353,1,1,Equal,381,0.135,0.0511,SYML,Where's My Love - Piano Solo
+So You Wanna Be A Superhero_Carissa's Wierd,53,2,8,6,0,0.1353,0.0025,Positive,382,0.322,0.527,Carissa's Wierd,So You Wanna Be A Superhero
