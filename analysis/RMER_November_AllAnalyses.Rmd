@@ -90,6 +90,20 @@ Additionally the internal consistency for
   a) rumination was good, `r round(psych::alpha(x = select(data, rrq_1:rrq_12))$total$raw_alpha, 2)`  
   b) the emotion and cognitive regulation scale of the MUSEBAQ was also good `r round(psych::alpha(x = select(data, musebaq_1:musebaq_9))$total$raw_alpha, 2)`
 
+## Liklihood of listening to the song for emotion regulation 
+
+```{r}
+distribution <- ggpubr::ggdensity(data = data, 
+                  x = "reg.use_1",
+                  fill = "lightblue", 
+                  add = "median",
+                  xlab = "Likelihood of listening to song during sadness", 
+                  ggtheme = theme_classic(base_size = 16, base_family = "Times New Roman")   )   
+
+print(quantile(data$reg.use_1, na.rm = TRUE))
+
+ggsave(here::here("docs", "regUseDistribution.svg"), plot = distribution)  
+```
 
 <!-- ## Song measures  -->
 <!-- Note: The sentiment scores were calculated in the [MIR Script]() -->
@@ -352,6 +366,15 @@ sjPlot::tab_model(PostInductionTimePoints,
                   show.std = TRUE, 
                   show.fstat = TRUE, 
                   pred.labels = FALSE)
+
+
+emmeans::contrast(emmeans::emmeans(AllExplore, 
+                           ~rumination*Timepoint, 
+                           at = (list(rumination = c(minrum, plusrum, meanrum),
+                                      Timepoint = c("PostInduction",
+                                                    "PostListening")))), 
+                  "pairwise", 
+                  by = "rumination")
 ```
 
 
@@ -582,6 +605,21 @@ ConAppGridYesCont <- emmeans::emmeans(ConAppModel,
 emmeans::contrast(ConAppGridYesCont, 
                   "pairwise", 
                   by = c("rumination"))
+
+ConAppGridYesContYesApp <- emmeans::emmeans(ConAppModel, 
+                                   ~rumination*Timepoint, 
+                                   at = (list(rumination = c(minrum, plusrum, meanrum),
+                                              Timepoint = c("PostListening",
+                                                            "PostInduction"), 
+                                              Contagion = "Yes", 
+                                              Appraisal = "Yes"
+                                              )))
+
+emmeans::contrast(ConAppGridYesContYesApp, 
+                  "pairwise", 
+                  by = c("rumination"))
+
+
 ```
 
 
@@ -602,6 +640,55 @@ ContAppAvPlot <- emmeans::emmip(ConAppGridAv,
   ggplot2::ylab("Predicted Sadness Score") + 
   ggplot2::xlab(element_blank()) + 
   ggplot2::labs(subtitle = "Averaged over ") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+
+emmeans::emmip(ConAppGridYesCont,
+                  rumination~Timepoint, 
+                  CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "Contagion occurs \nand appraisal does not \naveraged over all other included mechanisms") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+emmeans::emmip(ConAppGridNoCont,
+                  rumination~Timepoint, 
+                  CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "Contagion does not occur \n and appraisal does \n averaged over all other included mechanisms") +
+  ggplot2::scale_y_continuous(limits = c(8,18))
+
+emmeans::emmip(ConAppGridYesContYesApp,
+                  rumination~Timepoint, 
+                  CI = TRUE) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::theme_classic(base_size = 12, base_family = "Times New Roman") + 
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("+1 SD", "Mean", "-1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab(element_blank()) + 
+  ggplot2::labs(subtitle = "Contagion and appraisal occur \naveraged over all other included mechanisms") +
   ggplot2::scale_y_continuous(limits = c(8,18))
 
 ```
