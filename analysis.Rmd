@@ -1,0 +1,155 @@
+---
+title: "Listening to sad music during induced sadness"
+author: "Joel Larwood"
+output: html_notebook
+---
+
+People often report listening to sad music when they are experience sadness. It has been argued that people are likely to listen to songs that make them sad when they are sad, especially in cases when they are high in trait rumination. 
+
+This project evaluates this claim further by having people nominate a song that makes them sad before inducing a sad state and asking them to listen to the nominated sad song. Sadness was measured before and after listening to the sad song with measures taken of the emotion mechanisms that are associated with the song and the likelihood of the song being listened to. 
+
+This notebook provides the analysis of the results. The script for data cleaning can be seen [here](/script)
+
+```{r pkgLoad, message=FALSE}
+
+xfun::pkg_attach2("tidyverse", 
+                  "here", 
+                  "lmerTest", 
+                  "apa")
+
+```
+
+
+## Source Files 
+Note: This script will not run unless the code chunk options are changed to `eval = TRUE`
+
+
+```{r source, eval = FALSE}
+
+source(list.files(here::here("code"), pattern = ".R"))
+
+```
+
+```{r}
+data <- read_rds(here::here("data", "RMER_November2018_ProcessedWide.rds"))
+```
+
+# Get descriptives of the data that includes the spotify variables and the lyric information
+
+## Internal consistency 
+
+```{r measures}
+
+measures <- list(t1 = select(data, deq_1_1:deq_1_4),
+                 t2 = select(data, deq_2_1:deq_2_4),
+                 t3 = select(data, deq_3_1:deq_3_4),
+                 rumination = select(data, rrq_1:rrq_12), 
+                 musebaq = select(data, musebaq_1:musebaq_9)
+                 )
+
+
+
+for (i in measures){
+  print(round(psych::alpha(i)[["total"]][["raw_alpha"]], 2))
+}
+
+```
+
+# Mean and SD for self report 
+```{r meanSD}
+
+psych::describe(select(data, 
+                       age, 
+                       musebaq:rumination)) 
+```
+
+# Manipulation check 
+
+```{r manipulationCheck}
+apa::t_apa(t.test(data$PostInduction, data$Baseline,
+                  paired = TRUE))
+```
+
+The manipulation of sadness was successful 
+
+# Pre to Post listening increase 
+
+```{r PrePostSadness}
+apa::t_apa(t.test(data$PostListening, data$PostInduction, 
+                  paired = TRUE))
+```
+
+
+Sadness also increased from pre to post Listening 
+
+# Effect of Rumination
+
+First I need to make long data 
+```{r MakeLong}
+
+data_long <- data %>% 
+  pivot_longer(cols = c("PostInduction", "PostListening"), 
+               names_to = "Timepoint", 
+               values_to = "Sadness")
+```
+
+
+Here I fit a series of general linear mixed models and compare them 
+
+```{r}
+mod1 <- lmerTest::lmer(Sadness~Timepoint + (1|ID), 
+                       data = data_long)
+
+mod2 <- lmerTest::lmer(Sadness~Timepoint + rumination + (1|ID), 
+                       data = data_long)
+
+mod3 <- lmerTest::lmer(Sadness~Timepoint*Baseline + (1|ID), 
+                       data = data_long)
+
+mod4 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + (1|ID), 
+                       data = data_long)
+
+mod5 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + (1|ID), 
+                       data = data_long)
+
+mod6 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + (1|ID), 
+                       data = data_long)
+
+mod7 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + rumination*Contagion + rumination * Appraisal + (1|ID), 
+                       data = data_long)
+
+sjPlot::tab_model(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
+                  show.intercept = TRUE, 
+                  show.std = TRUE, 
+                  show.est = FALSE, 
+                  show.fstat = TRUE, 
+                  show.aic = TRUE
+                  )
+```
+
+From the AIC it can be seen the `mod6` is the best fit and adding controls for the rumination * mechanism interactions does not improve fit according to the AIC
+
+
+```{r BestModel}
+
+sjPlot::tab_model(mod6, 
+                  show.est = FALSE, 
+                  show.std = TRUE, 
+                  show.aic = TRUE)
+```
+
+First I will look at the simple effects of rumination 
+```{r}
+mean_rum <- mean(data$rumination)
+minus_rum <- mean_rum - sd(data$rumination)
+plus_rum <- mean_rum + sd(data$rumination)
+
+rum_simple <- emmeans::ref_grid(mod6, 
+                  at = list(rumination = c(minus_rum, mean_rum, plus_rum)))
+
+rum_simple_plot <- emmeans::emmip(rum_simple, 
+                                  formula = rumination ~ Timepoint)
+
+
+```
+

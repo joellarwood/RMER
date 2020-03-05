@@ -3,6 +3,7 @@ library(tidyverse)
 library(spotifyr)
 library(genius)
 library(tidytext)
+library(stringdist)
 source("~/Library/Mobile Documents/com~apple~CloudDocs/Research/SpotifyCredentials.R")
 
 ## Load in Data
@@ -55,27 +56,31 @@ Nov18Features <- Nov18Features %>%
 
 # Some participants had multiple songs returned. I need to filter this out manually. I also used this to remove mismatched songs (incl. live versions)
 
-row_remove <- c(3, 5, 12, 16, 20, 22, 29, 31, 35, 37, 39, 53, 54:56, 74, 79, 97, 98, 100, 102, 112, 113, 116, 117, 120, 126, 128, 129, 154, 163, 173, 176, 177, 182, 191, 192, 202, 204, 209, 212, 217, 222, 224, 226:228, 239, 249, 257, 258, 264, 277, 278, 285, 293, 304, 310, 319, 322, 323, 327, 328, 334, 338, 343, 350, 353, 354, 358, 359, 364, 367, 387, 391, 392, 394, 396, 397, 403)
+Nov18Features %>% 
+  mutate(participant_nom = glue::glue("{sad.song}_{sad.song.artist}")) %>% 
+  select(song_artist, spotify_row, ID, participant_nom) %>%
+  mutate(dist=stringdist(participant_nom, song_artist)) %>% 
+  filter(dist>7) %>% 
+  view()
+
+# Note section below will not be reporducable given dynamic nature of spotify search algorothms
+row_remove <- c(3, 5, 12, 20, 22, 29, 31, 35, 37, 39, 53, 54:56, 79, 86, 99, 98, 101, 103, 113, 114, 118, 121, 127, 129, 134, 141, 155, 159, 164, 173, 174, 177, 178, 183, 201, 203, 208, 211, 216, 221, 223, 225:227, 238, 242, 248, 250, 256, 257, 263, 276, 277, 284, 286, 292, 303, 309, 318, 321, 322, 331, 335, 340, 341, 348, 351, 352, 356, 357, 362, 385, 389, 390, 394, 395, 401, 402)
 
 length(row_remove)
 
 Nov18Features_Filtered <- Nov18Features %>% 
   filter(!spotify_row %in% row_remove)
 
-#Filter to just important spotify variables
-Nov18Features_Filtered_Select <- Nov18Features_Filtered %>% 
-  select(ID, song_artist, valence, energy, artist_rtn, song_rtn)
-
 
 #Write CSV
-Nov18Features_Filtered_Select %>% 
+Nov18Features_Filtered %>% 
   write_csv(here::here("data", "RMER_November2018_Spotify.csv"))
 
 #Write Rdata 
-Nov18Features_Filtered_Select %>% 
+Nov18Features_Filtered %>% 
   write_rds(here::here("data", "RMER_November2018_Spotify.rds"))
 
-Nov18Lyrics <- Nov18Features_Filtered_Select %>% 
+Nov18Lyrics <- Nov18Features_Filtered %>% 
   genius::add_genius(artist = artist_rtn, 
                      title = song_rtn, 
                       type = "lyrics") %>% 
