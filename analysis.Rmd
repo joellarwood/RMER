@@ -62,6 +62,58 @@ psych::describe(select(data,
                        age, 
                        musebaq:rumination)) 
 ```
+# Logistic Regression rumination and BRECVEMA
+
+
+```{r}
+brecvema_counts <- data %>% 
+  select(BSR:Appraisal) %>% 
+  pivot_longer(everything(), 
+               names_to = "brecvema", 
+               values_to = "response") %>% 
+  group_by(brecvema, response) %>% 
+  add_count()
+  
+map(fct_count)
+
+```
+
+## Logistic Regression 
+
+The logistic regression indicates that mechanism occurance is not influenced by rumination. 
+```{r}
+
+p_extract <- function(...){
+  coef()[2, 4]
+}
+
+log_reg_brecvema_p <- data %>% 
+  select (BSR:Appraisal) %>%
+  map(~glm(.x ~ data$rumination, family = binomial, data = data)) %>% 
+  map(summary) %>% 
+  map(coef) %>% 
+  map_dfr(8) %>% 
+  pivot_longer(everything(), 
+               names_to = "mechanism", 
+               values_to = "p") 
+
+log_reg_brecvema_OR <- data %>% 
+  select (BSR:Appraisal) %>%
+  map(~glm(.x ~ data$rumination, family = binomial, data = data)) %>% 
+  map(summary) %>% 
+  map(coef) %>% 
+  map_dfr(5) %>% 
+  pivot_longer(everything(), 
+               names_to = "mechanism", 
+               values_to = "int") %>% 
+  mutate(OR = exp(int))
+
+
+left_join(log_reg_brecvema_OR, log_reg_brecvema_p) 
+
+```
+
+However, we could look at this further by considering the effect of rumination and the song affect. 
 
 # Manipulation check 
 
@@ -103,7 +155,7 @@ mod1 <- lmerTest::lmer(Sadness~Timepoint + (1|ID),
 mod2 <- lmerTest::lmer(Sadness~Timepoint + rumination + (1|ID), 
                        data = data_long)
 
-mod3 <- lmerTest::lmer(Sadness~Timepoint*Baseline + (1|ID), 
+mod3 <- lmerTest::lmer(Sadness~Timepoint*rumination + (1|ID), 
                        data = data_long)
 
 mod4 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + (1|ID), 
@@ -115,8 +167,9 @@ mod5 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * 
 mod6 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + (1|ID), 
                        data = data_long)
 
-mod7 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + rumination*Contagion + rumination * Appraisal + (1|ID), 
+mod7 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + rumination*Contagion + (1|ID), 
                        data = data_long)
+
 
 sjPlot::tab_model(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
                   show.intercept = TRUE, 
@@ -129,27 +182,70 @@ sjPlot::tab_model(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
 
 From the AIC it can be seen the `mod6` is the best fit and adding controls for the rumination * mechanism interactions does not improve fit according to the AIC
 
-
 ```{r BestModel}
 
-sjPlot::tab_model(mod6, 
+sjPlot::tab_model(mod3, mod6, 
                   show.est = FALSE, 
                   show.std = TRUE, 
                   show.aic = TRUE)
 ```
 
-First I will look at the simple effects of rumination 
+
 ```{r}
-mean_rum <- mean(data$rumination)
-minus_rum <- mean_rum - sd(data$rumination)
-plus_rum <- mean_rum + sd(data$rumination)
-
-rum_simple <- emmeans::ref_grid(mod6, 
-                  at = list(rumination = c(minus_rum, mean_rum, plus_rum)))
-
 rum_simple_plot <- emmeans::emmip(rum_simple, 
-                                  formula = rumination ~ Timepoint)
+                                  formula = rumination ~ Timepoint, 
+                                  CIs = TRUE, 
+                                  frequentist = TRUE) +
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d(labels = c("-1 SD", "Mean", "+1 SD"),
+                                name = "Rumination \nScore")+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::ylim(c(10, 18)) +
+  ggplot2::theme_classic(base_size = 20, base_family = "Times New Roman") 
 
+
+rum_simple_plot 
+```
+
+## Johnson Neyman 
+As there are two levels to the timepoint factor we can look at the Johnson Neyman interval for rumination to indicate at what point of rumination an increase significantly predicted. 
+
+```{r}
+
+jn_data <- data_long %>% 
+  mutate(Timepoint = if_else(Timepoint == "PostInduction", 0, 1))
+
+jn_model <- lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + (1|ID), 
+                 data = jn_data)
+
+jn_rum <- interactions::johnson_neyman(model = jn_model, 
+                       pred = "Timepoint",
+                       modx = "rumination"
+                       )
+
+jn_rum$bounds
+
+jn_rum$plot
+
+```
+
+## Interaction with Contagion
+```{r}
+
+contagion_simple_plot <- emmeans::emmip(rum_simple, 
+                                  formula = Contagion ~ Timepoint, 
+                                  CIs = TRUE, 
+                                  frequentist = TRUE) +
+  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_colour_viridis_d()+
+  ggplot2::ylab("Predicted Sadness Score") + 
+  ggplot2::xlab("Timepoint") +
+  ggplot2::ylim(c(10, 18)) +
+  ggplot2::theme_classic(base_size = 20, base_family = "Times New Roman") 
+
+
+contagion_simple_plot 
 
 ```
 
