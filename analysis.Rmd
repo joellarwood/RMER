@@ -74,8 +74,6 @@ brecvema_counts <- data %>%
   group_by(brecvema, response) %>% 
   add_count()
   
-map(fct_count)
-
 ```
 
 ## Logistic Regression 
@@ -301,7 +299,7 @@ best_model_grid <- emmeans::ref_grid(mod4,
 
 
 rum_best_model <- emmeans::emmip(best_model_grid, 
-                                  formula = rumination ~ Timepoint | Contagion | Appraisal | Conditioning, 
+                                  formula = rumination ~ Timepoint | Appraisal,
                                   CIs = TRUE, 
                                   frequentist = TRUE) +
   ggplot2::scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
@@ -313,20 +311,29 @@ rum_best_model <- emmeans::emmip(best_model_grid,
                          base_family = "Times New Roman") +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45))
 
+rum_best_model
+
 ```
 ## Gewt pairwise contrasts 
-```{r}
+This doesn't evaluate as it is very time consuming. The contrasts in a tibble have been saved along with the raw emmeans returned value. 
+```{reval=FALSE}
 
 best_model_contrast <- emmeans::contrast(best_model_grid, 
-                                         method = "pairwise") %>% 
-  broom::tidy()
-
+                                         method = "pairwise")
 
 write_rds(best_model_contrast, 
           here::here("data", "exploratroy_contrasts.Rds"))
 
+tidy_contrast <- broom::tidy(best_model_contrast)
 
-relevant_contrasts <- contrasts %>% 
+write_csv(tidy_contrast, 
+          here::here("data", "exploratory_contrasts_tidy.csv"))
+```
+
+This code chunk starts by importing the previously exported tibble of contrasts 
+```{r EvalContrasts}
+
+relevant_contrasts <- tidy_contrast %>% 
   tidyr::separate(col = level1, 
                   into = c("Timepoint", "rumination", "baseline", "Contagion", "Appraisal", "Conditioning", "Memory"),
                   sep = ",", 
@@ -341,8 +348,53 @@ relevant_contrasts <- contrasts %>%
            baseline == baseline2 & 
            Contagion == Contagion2 &
            Appraisal == Appraisal2 & 
-           Conditioning == Conditionging2 &
+           Conditioning == Conditioning2 &
            Memory == Memory2)
-  
+
+
+relevant_contrasts %>% 
+  filter(Appraisal == "Yes") %>% 
+  select(Timepoint, Timepoint2, Contagion, Appraisal, Conditioning, Memory, rumination, baseline, estimate, p.value) %>% 
+  view()
+
+
+```
+
+
+Here I set up a hypothetical best case scenerio in the reference grid. 
+The results indicate that under best case scenarios the effect cannot be reversed. Although it is nullified. 
+```{r}
+best_case_grid <- emmeans::ref_grid(mod4, 
+                  at = list(rumination = c(minus_rum, mean_rum, plus_rum), 
+                            Baseline = c(minus_baseline, mean_baseline, plus_baseline), 
+                            Contagion = "No", 
+                            Appraisal = "Yes", 
+                            Conditioning = "No", 
+                            Memory = "No")
+                  )
+
+best_case_contrast <- emmeans::contrast(best_case_grid, 
+                                        "pairwise") %>% 
+  broom::tidy() %>% 
+  tidyr::separate(col = level1, 
+                  into = c("Timepoint", "rumination", "baseline", "Contagion", "Appraisal", "Conditioning", "Memory"),
+                  sep = ",", 
+                  remove = TRUE) %>% 
+  tidyr::separate(col = level2, 
+                  into = c("Timepoint2", "rumination2", "baseline2", "Contagion2", "Appraisal2", "Conditioning2", "Memory2"),
+                  sep = ",", 
+                  remove = TRUE) %>%
+  filter(Timepoint == "PostInduction" &
+           Timepoint2 == "PostListening" & 
+           rumination == rumination2 &
+           baseline == baseline2 & 
+           Contagion == Contagion2 &
+           Appraisal == Appraisal2 & 
+           Conditioning == Conditioning2 &
+           Memory == Memory2)
+
+best_case_contrast %>%
+  filter(p.value < .05) 
+
 ```
 
