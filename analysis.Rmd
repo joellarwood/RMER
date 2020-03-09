@@ -322,6 +322,10 @@ best_model_contrast <- emmeans::contrast(best_model_grid,
   broom::tidy()
 
 
+write_rds(best_model_contrast, 
+          here::here("data", "exploratroy_contrasts.Rds"))
+
+
 relevant_contrasts <- contrasts %>% 
   tidyr::separate(col = level1, 
                   into = c("Timepoint", "rumination", "baseline", "Contagion", "Appraisal", "Conditioning", "Memory"),
