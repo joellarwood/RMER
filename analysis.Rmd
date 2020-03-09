@@ -149,29 +149,61 @@ data_long <- data %>%
 Here I fit a series of general linear mixed models and compare them 
 
 ```{r}
-mod1 <- lmerTest::lmer(Sadness~Timepoint + (1|ID), 
+# Model 1 is the hypiothesised model 
+
+mod1 <- lmerTest::lmer(Sadness~Timepoint*rumination + (1|ID), 
                        data = data_long)
 
-mod2 <- lmerTest::lmer(Sadness~Timepoint + rumination + (1|ID), 
+# Model 2 I control for th interaction with baseline sadness
+mod2 <- lmerTest::lmer(Sadness~
+                         Timepoint * rumination + 
+                         Timepoint * Baseline + 
+                         (1|ID), 
+                       data = data_long)
+# Model 3 I add the theoretically relvant BRECVEMA mechanisms of Contagion and Appraisal
+
+mod3 <- lmerTest::lmer(Sadness~
+                         Timepoint * rumination + 
+                         Timepoint * Baseline + 
+                         Timepoint* Contagion + 
+                         Timepoint* Appraisal + 
+                         (1|ID), 
                        data = data_long)
 
-mod3 <- lmerTest::lmer(Sadness~Timepoint*rumination + (1|ID), 
+# Model four I add the marginally significant mechanisms predicted by rumination 
+mod4 <- lmerTest::lmer(Sadness~
+                         Timepoint * rumination + 
+                         Timepoint * Baseline + 
+                         Timepoint* Contagion + 
+                         Timepoint* Appraisal + 
+                         Timepoint * Conditioning + 
+                         Timepoint + Memory +
+                         (1|ID), 
                        data = data_long)
 
-mod4 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + (1|ID), 
+# Model 5 I remove appraisal
+
+mod5 <- lmerTest::lmer(Sadness~
+                         Timepoint * rumination + 
+                         Timepoint * Baseline + 
+                         Timepoint* Contagion + 
+                         #Timepoint* Appraisal + 
+                         Timepoint * Conditioning + 
+                         Timepoint + Memory +
+                         (1|ID), 
                        data = data_long)
 
-mod5 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + (1|ID), 
+#model 6 I look at a three way interaction between baseline rumination and timepoint 
+
+mod6 <- lmerTest::lmer(Sadness~
+                         Timepoint * rumination * Baseline +  
+                         (1|ID), 
                        data = data_long)
 
-mod6 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + (1|ID), 
-                       data = data_long)
-
-mod7 <- lmerTest::lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + rumination*Contagion + (1|ID), 
-                       data = data_long)
-
-
-sjPlot::tab_model(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
+sjPlot::tab_model(mod1, mod2, mod6, mod3, mod4, mod5, 
+                  #mod5, mod6, 
+                  #mod6, mod8,
+                  #mod9,mod10, mod11, 
                   show.intercept = TRUE, 
                   show.std = TRUE, 
                   show.est = FALSE, 
@@ -180,23 +212,43 @@ sjPlot::tab_model(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
                   )
 ```
 
-From the AIC it can be seen the `mod6` is the best fit and adding controls for the rumination * mechanism interactions does not improve fit according to the AIC
+From the AIC it can be seen the `mod4` is the best fit and adding controls for the rumination * mechanism interactions does not improve fit according to the AIC
 
 ```{r BestModel}
 
-sjPlot::tab_model(mod3, mod6, 
+sjPlot::tab_model(mod1, mod4, 
                   show.est = FALSE, 
                   show.std = TRUE, 
                   show.aic = TRUE)
 ```
 
-
+I will now set up reference grids for eah of the models 
 ```{r}
-rum_simple_plot <- emmeans::emmip(rum_simple, 
+
+mean_rum <- mean(data$rumination, na.rm = TRUE)
+plus_rum <- mean_rum + sd(data$rumination, na.rm = TRUE)
+minus_rum <- mean_rum - sd(data$rumination, na.rm = TRUE)
+
+mean_baseline <- mean(data$rumination, na.rm = TRUE)
+plus_baseline <- mean_rum + sd(data$rumination, na.rm = TRUE)
+minus_baseline <- mean_rum - sd(data$rumination, na.rm = TRUE)
+
+hyp_grid <- emmeans::ref_grid(mod1, 
+                              at = list(rumination = c(minus_rum, mean_rum, plus_rum), 
+                                        Timepoint = c("PostInduction", "PostListening")))
+
+
+```
+
+# Hypothesised Model Plot 
+```{r}
+
+
+rum_simple_plot <- emmeans::emmip(hyp_grid, 
                                   formula = rumination ~ Timepoint, 
                                   CIs = TRUE, 
                                   frequentist = TRUE) +
-  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
   ggplot2::scale_colour_viridis_d(labels = c("-1 SD", "Mean", "+1 SD"),
                                 name = "Rumination \nScore")+
   ggplot2::ylab("Predicted Sadness Score") + 
@@ -206,7 +258,10 @@ rum_simple_plot <- emmeans::emmip(rum_simple,
 
 
 rum_simple_plot 
+
+
 ```
+
 
 ## Johnson Neyman 
 As there are two levels to the timepoint factor we can look at the Johnson Neyman interval for rumination to indicate at what point of rumination an increase significantly predicted. 
@@ -230,22 +285,60 @@ jn_rum$plot
 
 ```
 
-## Interaction with Contagion
+# Best fiting model 
 ```{r}
 
-contagion_simple_plot <- emmeans::emmip(rum_simple, 
-                                  formula = Contagion ~ Timepoint, 
+
+best_model_grid <- emmeans::ref_grid(mod4, 
+                                   at = list(rumination = c(minus_rum, mean_rum, plus_rum),
+                                             Baseline = c(minus_baseline, mean_baseline, plus_baseline), 
+                                             Contagion = c("No", "Yes"), 
+                                             Conditioning = c("No", "Yes"), 
+                                             Appraisal = c("No", "Yes"), 
+                                             Memory = c("No", "Yes")))
+                                             
+
+
+
+rum_best_model <- emmeans::emmip(best_model_grid, 
+                                  formula = rumination ~ Timepoint | Contagion | Appraisal | Conditioning, 
                                   CIs = TRUE, 
                                   frequentist = TRUE) +
-  scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
+  ggplot2::scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
   ggplot2::scale_colour_viridis_d()+
   ggplot2::ylab("Predicted Sadness Score") + 
   ggplot2::xlab("Timepoint") +
-  ggplot2::ylim(c(10, 18)) +
-  ggplot2::theme_classic(base_size = 20, base_family = "Times New Roman") 
+  ggplot2::ylim(c(8, 18)) +
+  ggplot2::theme_classic(base_size = 20, 
+                         base_family = "Times New Roman") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45))
+
+```
+## Gewt pairwise contrasts 
+```{r}
+
+best_model_contrast <- emmeans::contrast(best_model_grid, 
+                                         method = "pairwise") %>% 
+  broom::tidy()
 
 
-contagion_simple_plot 
-
+relevant_contrasts <- contrasts %>% 
+  tidyr::separate(col = level1, 
+                  into = c("Timepoint", "rumination", "baseline", "Contagion", "Appraisal", "Conditioning", "Memory"),
+                  sep = ",", 
+                  remove = TRUE) %>% 
+    tidyr::separate(col = level2, 
+                  into = c("Timepoint2", "rumination2", "baseline2", "Contagion2", "Appraisal2", "Conditioning2", "Memory2"),
+                  sep = ",", 
+                  remove = TRUE) %>%
+  filter(Timepoint == "PostInduction" &
+           Timepoint2 == "PostListening" & 
+           rumination == rumination2 &
+           baseline == baseline2 & 
+           Contagion == Contagion2 &
+           Appraisal == Appraisal2 & 
+           Conditioning == Conditionging2 &
+           Memory == Memory2)
+  
 ```
 
