@@ -3,6 +3,7 @@
 library(visdat)
 library(naniar)
 library(tidyverse)
+library(qualtRics)
 
 ## Load in Data
 testvalues <- c("test", "joel test")
@@ -12,12 +13,21 @@ reverse_code <- function(x, max)(
   (max  + 1) - x
 )
 
+
+qualtRics::read_survey(here::here("data", "RMER_November2018.csv")) %>% 
+  filter(sad.song != testvalues) %>% 
+  distinct(ProlificID) %>% 
+  nrow() 
+
+
+
+
 Nov18Raw <- qualtRics::read_survey(here::here("data", "RMER_November2018.csv")) %>% 
   replace_with_na_all(condition = ~.x == -99) %>% 
-  distinct(ProlificID, .keep_all = TRUE) %>%  
+  #distinct(ProlificID, .keep_all = TRUE) %>%  
   filter(Finished == 1) %>%  
   filter(DistributionChannel == "anonymous") %>%  
-  filter(sad.song != testvalues) %>% 
+  #filter(sad.song != testvalues) %>% 
   tibble::rowid_to_column("ID")
   
 visdat::vis_dat(Nov18Raw)

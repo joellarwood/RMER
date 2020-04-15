@@ -15,7 +15,8 @@ This notebook provides the analysis of the results. The script for data cleaning
 xfun::pkg_attach2("tidyverse", 
                   "here", 
                   "lmerTest", 
-                  "apa")
+                  "apa", 
+                  "interactions")
 
 ```
 
@@ -58,60 +59,15 @@ for (i in measures){
 # Mean and SD for self report 
 ```{r meanSD}
 
-psych::describe(select(data, 
-                       age, 
-                       musebaq:rumination)) 
+psych::describe(
+  select(
+    data, 
+    age, 
+    musebaq:rumination
+  )
+)[c(2:5,8, 9)] 
 ```
-# Logistic Regression rumination and BRECVEMA
-
-
-```{r}
-brecvema_counts <- data %>% 
-  select(BSR:Appraisal) %>% 
-  pivot_longer(everything(), 
-               names_to = "brecvema", 
-               values_to = "response") %>% 
-  group_by(brecvema, response) %>% 
-  add_count()
-  
-```
-
-## Logistic Regression 
-
-The logistic regression indicates that mechanism occurance is not influenced by rumination. 
-```{r}
-
-p_extract <- function(...){
-  coef()[2, 4]
-}
-
-log_reg_brecvema_p <- data %>% 
-  select (BSR:Appraisal) %>%
-  map(~glm(.x ~ data$rumination, family = binomial, data = data)) %>% 
-  map(summary) %>% 
-  map(coef) %>% 
-  map_dfr(8) %>% 
-  pivot_longer(everything(), 
-               names_to = "mechanism", 
-               values_to = "p") 
-
-log_reg_brecvema_OR <- data %>% 
-  select (BSR:Appraisal) %>%
-  map(~glm(.x ~ data$rumination, family = binomial, data = data)) %>% 
-  map(summary) %>% 
-  map(coef) %>% 
-  map_dfr(5) %>% 
-  pivot_longer(everything(), 
-               names_to = "mechanism", 
-               values_to = "int") %>% 
-  mutate(OR = exp(int))
-
-
-left_join(log_reg_brecvema_OR, log_reg_brecvema_p) 
-
-```
-
-However, we could look at this further by considering the effect of rumination and the song affect. 
+ 
 
 # Manipulation check 
 
@@ -140,7 +96,9 @@ First I need to make long data
 data_long <- data %>% 
   pivot_longer(cols = c("PostInduction", "PostListening"), 
                names_to = "Timepoint", 
-               values_to = "Sadness")
+               values_to = "Sadness") %>% 
+  janitor::clean_names() %>% 
+  mutate(timepoint = as_factor(timepoint))
 ```
 
 
@@ -149,75 +107,17 @@ Here I fit a series of general linear mixed models and compare them
 ```{r}
 # Model 1 is the hypiothesised model 
 
-mod1 <- lmerTest::lmer(Sadness~Timepoint*rumination + (1|ID), 
+hyp <- lmerTest::lmer(sadness~timepoint*rumination + (1|id), 
                        data = data_long)
 
-# Model 2 I control for th interaction with baseline sadness
-mod2 <- lmerTest::lmer(Sadness~
-                         Timepoint * rumination + 
-                         Timepoint * Baseline + 
-                         (1|ID), 
-                       data = data_long)
-# Model 3 I add the theoretically relvant BRECVEMA mechanisms of Contagion and Appraisal
 
-mod3 <- lmerTest::lmer(Sadness~
-                         Timepoint * rumination + 
-                         Timepoint * Baseline + 
-                         Timepoint* Contagion + 
-                         Timepoint* Appraisal + 
-                         (1|ID), 
-                       data = data_long)
-
-# Model four I add the marginally significant mechanisms predicted by rumination 
-mod4 <- lmerTest::lmer(Sadness~
-                         Timepoint * rumination + 
-                         Timepoint * Baseline + 
-                         Timepoint* Contagion + 
-                         Timepoint* Appraisal + 
-                         Timepoint * Conditioning + 
-                         Timepoint + Memory +
-                         (1|ID), 
-                       data = data_long)
-
-# Model 5 I remove appraisal
-
-mod5 <- lmerTest::lmer(Sadness~
-                         Timepoint * rumination + 
-                         Timepoint * Baseline + 
-                         Timepoint* Contagion + 
-                         #Timepoint* Appraisal + 
-                         Timepoint * Conditioning + 
-                         Timepoint + Memory +
-                         (1|ID), 
-                       data = data_long)
-
-#model 6 I look at a three way interaction between baseline rumination and timepoint 
-
-mod6 <- lmerTest::lmer(Sadness~
-                         Timepoint * rumination * Baseline +  
-                         (1|ID), 
-                       data = data_long)
-
-sjPlot::tab_model(mod1, mod2, mod6, mod3, mod4, mod5, 
-                  #mod5, mod6, 
-                  #mod6, mod8,
-                  #mod9,mod10, mod11, 
+sjPlot::tab_model(hyp, 
                   show.intercept = TRUE, 
                   show.std = TRUE, 
                   show.est = FALSE, 
                   show.fstat = TRUE, 
                   show.aic = TRUE
                   )
-```
-
-From the AIC it can be seen the `mod4` is the best fit and adding controls for the rumination * mechanism interactions does not improve fit according to the AIC
-
-```{r BestModel}
-
-sjPlot::tab_model(mod1, mod4, 
-                  show.est = FALSE, 
-                  show.std = TRUE, 
-                  show.aic = TRUE)
 ```
 
 I will now set up reference grids for eah of the models 
@@ -227,13 +127,9 @@ mean_rum <- mean(data$rumination, na.rm = TRUE)
 plus_rum <- mean_rum + sd(data$rumination, na.rm = TRUE)
 minus_rum <- mean_rum - sd(data$rumination, na.rm = TRUE)
 
-mean_baseline <- mean(data$rumination, na.rm = TRUE)
-plus_baseline <- mean_rum + sd(data$rumination, na.rm = TRUE)
-minus_baseline <- mean_rum - sd(data$rumination, na.rm = TRUE)
-
 hyp_grid <- emmeans::ref_grid(mod1, 
                               at = list(rumination = c(minus_rum, mean_rum, plus_rum), 
-                                        Timepoint = c("PostInduction", "PostListening")))
+                                        timepoint = c("PostInduction", "PostListening")))
 
 
 ```
@@ -243,7 +139,7 @@ hyp_grid <- emmeans::ref_grid(mod1,
 
 
 rum_simple_plot <- emmeans::emmip(hyp_grid, 
-                                  formula = rumination ~ Timepoint, 
+                                  formula = rumination ~ timepoint, 
                                   CIs = TRUE, 
                                   frequentist = TRUE) +
   ggplot2::scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
@@ -267,13 +163,13 @@ As there are two levels to the timepoint factor we can look at the Johnson Neyma
 ```{r}
 
 jn_data <- data_long %>% 
-  mutate(Timepoint = if_else(Timepoint == "PostInduction", 0, 1))
+  mutate(timepoint = if_else(timepoint == "PostInduction", 0, 1))
 
-jn_model <- lmer(Sadness~Timepoint + Timepoint * rumination + Timepoint * Baseline + Timepoint*Contagion + Timepoint*Appraisal + (1|ID), 
+jn_model <- lmer(sadness~timepoint * rumination +(1|id), 
                  data = jn_data)
 
 jn_rum <- interactions::johnson_neyman(model = jn_model, 
-                       pred = "Timepoint",
+                       pred = "timepoint",
                        modx = "rumination"
                        )
 
@@ -281,120 +177,76 @@ jn_rum$bounds
 
 jn_rum$plot
 
+quantile(
+  data$rumination, 
+  probs = seq(0, 1, .05)
+)
+
 ```
 
-# Best fiting model 
+Results in supplment 1 suggest including the mechanisms of entrainment, conditioning, memory, and contagion as control variables. 
+
+I have also add a model that has gender and baseline as these values also correlated with rumination 
+
+
 ```{r}
 
+demo_glm <- lmer(
+  formula = sadness ~ 
+    timepoint*baseline + 
+    timepoint*gender + 
+    timepoint*rumination +
+    (1|id), 
+  data = data_long
+)
 
-best_model_grid <- emmeans::ref_grid(mod4, 
-                                   at = list(rumination = c(minus_rum, mean_rum, plus_rum),
-                                             Baseline = c(minus_baseline, mean_baseline, plus_baseline), 
-                                             Contagion = c("No", "Yes"), 
-                                             Conditioning = c("No", "Yes"), 
-                                             Appraisal = c("No", "Yes"), 
-                                             Memory = c("No", "Yes")))
-                                             
+brecvema_glm <- lmer(
+  formula = sadness ~
+    timepoint * rumination + 
+    timepoint * entrainment + 
+    timepoint * conditioning + 
+    timepoint * contagion + 
+    timepoint * memory + 
+      (1|id), 
+    data = data_long
+)
 
+demo_brecvema_glm <- lmer(
+  formula = sadness ~
+    timepoint * rumination + 
+    timepoint * baseline + 
+    timepoint * gender + 
+    timepoint * musebaq +
+    timepoint * entrainment + 
+    timepoint * conditioning + 
+    timepoint * contagion + 
+    timepoint * memory + 
+    timepoint * reg_use_1 +
+      (1|id), 
+    data = data_long
+)
 
+contagion_demo <- lmer(
+  formula = sadness ~
+    timepoint * baseline + 
+    timepoint * gender + 
+    timepoint * rumination + 
+    timepoint * contagion + 
+    timepoint * memory +
+    timepoint * conditioning + 
+      (1|id), 
+    data = data_long
+)
 
-rum_best_model <- emmeans::emmip(best_model_grid, 
-                                  formula = rumination ~ Timepoint | Appraisal,
-                                  CIs = TRUE, 
-                                  frequentist = TRUE) +
-  ggplot2::scale_x_discrete(labels = c("Post Induction", "Post Listening")) + 
-  ggplot2::scale_colour_viridis_d()+
-  ggplot2::ylab("Predicted Sadness Score") + 
-  ggplot2::xlab("Timepoint") +
-  ggplot2::ylim(c(8, 18)) +
-  ggplot2::theme_classic(base_size = 20, 
-                         base_family = "Times New Roman") +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45))
-
-rum_best_model
-
-```
-## Gewt pairwise contrasts 
-This doesn't evaluate as it is very time consuming. The contrasts in a tibble have been saved along with the raw emmeans returned value. 
-```{reval=FALSE}
-
-best_model_contrast <- emmeans::contrast(best_model_grid, 
-                                         method = "pairwise")
-
-write_rds(best_model_contrast, 
-          here::here("data", "exploratroy_contrasts.Rds"))
-
-tidy_contrast <- broom::tidy(best_model_contrast)
-
-write_csv(tidy_contrast, 
-          here::here("data", "exploratory_contrasts_tidy.csv"))
-```
-
-This code chunk starts by importing the previously exported tibble of contrasts 
-```{r EvalContrasts}
-
-relevant_contrasts <- tidy_contrast %>% 
-  tidyr::separate(col = level1, 
-                  into = c("Timepoint", "rumination", "baseline", "Contagion", "Appraisal", "Conditioning", "Memory"),
-                  sep = ",", 
-                  remove = TRUE) %>% 
-    tidyr::separate(col = level2, 
-                  into = c("Timepoint2", "rumination2", "baseline2", "Contagion2", "Appraisal2", "Conditioning2", "Memory2"),
-                  sep = ",", 
-                  remove = TRUE) %>%
-  filter(Timepoint == "PostInduction" &
-           Timepoint2 == "PostListening" & 
-           rumination == rumination2 &
-           baseline == baseline2 & 
-           Contagion == Contagion2 &
-           Appraisal == Appraisal2 & 
-           Conditioning == Conditioning2 &
-           Memory == Memory2)
-
-
-relevant_contrasts %>% 
-  filter(Appraisal == "Yes") %>% 
-  select(Timepoint, Timepoint2, Contagion, Appraisal, Conditioning, Memory, rumination, baseline, estimate, p.value) %>% 
-  view()
-
-
-```
-
-
-Here I set up a hypothetical best case scenerio in the reference grid. 
-The results indicate that under best case scenarios the effect cannot be reversed. Although it is nullified. 
-```{r}
-best_case_grid <- emmeans::ref_grid(mod4, 
-                  at = list(rumination = c(minus_rum, mean_rum, plus_rum), 
-                            Baseline = c(minus_baseline, mean_baseline, plus_baseline), 
-                            Contagion = "No", 
-                            Appraisal = "Yes", 
-                            Conditioning = "No", 
-                            Memory = "No")
+sjPlot::tab_model(hyp, demo_brecvema_glm,
+                  show.intercept = TRUE, 
+                  show.std = TRUE, 
+                  show.est = FALSE, 
+                  show.fstat = TRUE, 
+                  show.aic = TRUE, 
+                  file = "model_table.html"
                   )
 
-best_case_contrast <- emmeans::contrast(best_case_grid, 
-                                        "pairwise") %>% 
-  broom::tidy() %>% 
-  tidyr::separate(col = level1, 
-                  into = c("Timepoint", "rumination", "baseline", "Contagion", "Appraisal", "Conditioning", "Memory"),
-                  sep = ",", 
-                  remove = TRUE) %>% 
-  tidyr::separate(col = level2, 
-                  into = c("Timepoint2", "rumination2", "baseline2", "Contagion2", "Appraisal2", "Conditioning2", "Memory2"),
-                  sep = ",", 
-                  remove = TRUE) %>%
-  filter(Timepoint == "PostInduction" &
-           Timepoint2 == "PostListening" & 
-           rumination == rumination2 &
-           baseline == baseline2 & 
-           Contagion == Contagion2 &
-           Appraisal == Appraisal2 & 
-           Conditioning == Conditioning2 &
-           Memory == Memory2)
-
-best_case_contrast %>%
-  filter(p.value < .05) 
-
 ```
+
 

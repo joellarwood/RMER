@@ -1,0 +1,193 @@
+---
+title: 'Supplementary 1: Exploratroy Regressions'
+output:
+  html_document:
+    df_print: paged
+---
+
+In thge manuscript reference is made to exploratory regressions with regard to song charactersitics and BRECVEMA mechanisms. The purpose of this document is to detail these exploratory analysis and provide brief context for them. 
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+library(sjPlot)
+library(apa)
+library(here)
+```
+
+```{r, echo = FALSE, message = FALSE}
+supp_data <- read_rds(
+  here::here(
+    "data", "RMER_November2018_ProcessedWide.rds"
+    )
+  ) %>% 
+  select(
+    rumination, 
+    Baseline,
+    BSR:Appraisal, 
+    gender, 
+    musebaq, 
+    reg.use_1, 
+    age, 
+    hours.listen
+  ) %>% 
+  janitor::clean_names()
+```
+## Correlations with demographic information
+
+Rumination was found to relate to gender, such that females were more likely to have high scores compared to males. 
+
+```{r echo = FALSE, message = FALSE}
+gender_lm <- lm(
+  rumination ~ gender, 
+  data = supp_data,  
+) 
+
+sjPlot::tab_model(gender_lm)
+```
+
+```{r echo = FALSE, message = FALSE}
+apa::cor_apa(
+  x = cor.test(
+    supp_data$rumination, 
+    supp_data$baseline
+  ), 
+  format = "rmarkdown"
+)
+
+apa::cor_apa(
+  x = cor.test(
+    supp_data$rumination, 
+    supp_data$musebaq
+  ), 
+  format = "rmarkdown"
+)
+
+apa::cor_apa(
+  x = cor.test(
+    supp_data$rumination, 
+    supp_data$hours_listen
+  ), 
+  format = "rmarkdown"
+)
+
+apa::cor_apa(
+  x = cor.test(
+    supp_data$rumination, 
+    supp_data$reg_use_1
+  ), 
+  format = "rmarkdown"
+)
+
+```
+
+Likewise, baseline scores were higher in people with high rumination, *r*(380) = .25, *p* < .001, as was the likehood of using music for emotion regulation *r*(380) = .31, *p* < .001. Rumination was not related to hours spent listening to music *r*(380) = -.04, *p* = .492 but was related to the likehood that the song would be listened to during sadness *r*(379) = .16, *p* = .002 
+ 
+
+
+## Correlations with BRECVEMA mechanisms 
+
+The BRECVEMA model of emotion induction via music intially considered mechanisms to be wedded to strutural features. However, more recently it has been argued that these mechanisms arise at the person rather than music level. Below we provide the logistic regressions where each mechanism is regressed onto each mechanism. 
+
+First I present the counts of each mechanism 
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+brecvema_counts <- supp_data %>% 
+  select(bsr:appraisal) %>% 
+  pivot_longer(everything(), 
+               names_to = "brecvema", 
+               values_to = "response") %>% 
+  group_by(brecvema, response) %>% 
+  summarise(count = n()) %>%  
+  drop_na(response) %>%  
+  pivot_wider(
+    brecvema, 
+    names_from = response, 
+    values_from = count
+  ) %>% 
+  select(brecvema, 
+         Yes, 
+         No) %>%  
+  mutate(
+    prop_yes = round(
+      (Yes/(Yes+No)), 
+      2)
+    )
+
+brecvema_counts
+
+```
+
+```{r echo = FALSE, message = FALSE}
+bsr_glm <- glm(
+  bsr ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+entrainment_glm <- glm(
+  entrainment ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+conditioning_glm <- glm(
+  conditioning ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+)
+
+contagion_glm <- glm(
+  contagion ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+imagery_glm <- glm(
+  imagery ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+memory_glm <- glm(
+  memory ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+
+expectancy_glm <- glm(
+  expectancy ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+appraisal_glm <- glm(
+  appraisal ~ rumination, 
+  data = supp_data, 
+  family = "binomial"
+) 
+
+mech_plot <- sjPlot::tab_model(
+  bsr_glm, 
+  entrainment_glm, 
+  conditioning_glm, 
+  contagion_glm, 
+  imagery_glm, 
+  memory_glm, 
+  expectancy_glm, 
+  appraisal_glm, 
+  show.intercept = FALSE, 
+  show.ci = .8, 
+  title = "Results of regressing musical mechanisms onto rumination", 
+  string.ci = "80% CI"
+)
+
+```
+
+```{r echo = FALSE}
+mech_plot 
+```
+<br><br>
+
+From the table above it can be seen that entrainment, contagion, memory and conditioning are more likely to be present in people high in rumination. 
+
+
