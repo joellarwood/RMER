@@ -237,16 +237,6 @@ contagion_demo <- lmer(
       (1|id), 
     data = data_long
 )
-
-sjPlot::tab_model(hyp, demo_brecvema_glm,
-                  show.intercept = TRUE, 
-                  show.std = TRUE, 
-                  show.est = FALSE, 
-                  show.fstat = TRUE, 
-                  show.aic = TRUE, 
-                  file = "model_table.html"
-                  )
-
 ```
 
 

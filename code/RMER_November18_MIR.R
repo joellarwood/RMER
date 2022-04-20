@@ -17,7 +17,7 @@ Nov18BasicClean <-read_rds(here::here("data", "RMER_November2018_ProcessedWide.r
 ## Taken from https://mirr.netlify.com/audio-features-spotify.html 
 
 track_audio_features <- function(artist, title, type = "track") {
-  search_results <- spotifyr::search_spotify(paste(artist, title), type = type)
+  search_results <- spotifyr::search_spotify(paste(artist, title), type = track)
   
   spotify_artist <- dplyr::rename(
     tibble::enframe(search_results[[1]][[1]][[3]]), 

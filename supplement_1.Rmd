@@ -51,7 +51,7 @@ apa::cor_apa(
     supp_data$rumination, 
     supp_data$baseline
   ), 
-  format = "rmarkdown"
+  format = "text"
 )
 
 apa::cor_apa(
@@ -67,7 +67,7 @@ apa::cor_apa(
     supp_data$rumination, 
     supp_data$hours_listen
   ), 
-  format = "rmarkdown"
+  format = "text"
 )
 
 apa::cor_apa(
@@ -112,7 +112,10 @@ brecvema_counts <- supp_data %>%
       2)
     )
 
-brecvema_counts
+brecvema_counts %>% 
+  knitr::kable() %>% 
+  readr::write_file("brecvema_counts.html")
+
 
 ```
 
@@ -166,7 +169,7 @@ appraisal_glm <- glm(
   family = "binomial"
 ) 
 
-mech_plot <- sjPlot::tab_model(
+sjPlot::tab_model(
   bsr_glm, 
   entrainment_glm, 
   conditioning_glm, 
@@ -176,9 +179,8 @@ mech_plot <- sjPlot::tab_model(
   expectancy_glm, 
   appraisal_glm, 
   show.intercept = FALSE, 
-  show.ci = .8, 
-  title = "Results of regressing musical mechanisms onto rumination", 
-  string.ci = "80% CI"
+  show.ci = FALSE,
+  file = "supp_1_rum_brecvema.html"
 )
 
 ```
@@ -190,4 +192,75 @@ mech_plot
 
 From the table above it can be seen that entrainment, contagion, memory and conditioning are more likely to be present in people high in rumination. 
 
+
+# Correlations with music information 
+
+```{r}
+mir_data <- read_rds(
+  here::here(
+  "data", 
+  "RMER_November2018_SelfReport_MIR.rds"
+  )
+) %>% 
+  janitor::clean_names() %>% 
+  mutate(Negative_Lyric_Ratio = neg_count / word_count, 
+         sad_total_ratio = sad_count / word_count) %>% 
+  drop_na(
+    rumination, 
+    energy, 
+    valence, 
+    Negative_Lyric_Ratio
+  )
+```
+
+Plot valence and arousal data 
+```{r}
+
+ggpubr::ggscatterhist(
+  data = mir_data, 
+  x = "valence", 
+  y = "energy", 
+  color = "Negative_Lyric_Ratio", 
+  palette = "viridis", 
+  xlab = "Spotify Valence Metric", 
+  ylab = "Spotify Energy Metric", 
+  margin.plot = "density", 
+  margin.params = list(fill = "blue", color = "blue")
+  ) 
+
+```
+Correlations between music variables and rumination
+```{r}
+apa::cor_apa(
+  cor.test(
+    x = mir_data$rumination, 
+    y = mir_data$valence, 
+    conf.level = .95
+  ),
+  format = "text", 
+)
+
+apa::cor_apa(
+  cor.test(
+    x = mir_data$rumination, 
+    y = mir_data$energy, 
+    conf.level = .95
+  ),
+  format = "text", 
+)
+
+apa::cor_apa(
+  cor.test(
+    x = mir_data$rumination, 
+    y = mir_data$Negative_Lyric_Ratio, 
+    conf.level = .95
+  ),
+  format = "text", 
+)  
+
+
+
+
+
+```
 
